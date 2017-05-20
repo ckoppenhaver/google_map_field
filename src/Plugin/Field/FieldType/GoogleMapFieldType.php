@@ -78,6 +78,11 @@ class GoogleMapFieldType extends FieldItemBase {
           'size' => 'medium',
           'not null' => FALSE,
         ],
+        'routepairs' => [
+          'type' => 'text',
+          'size' => 'big',
+          'not null' => FALSE,
+        ],
       ],
     ];
   }
@@ -123,6 +128,9 @@ class GoogleMapFieldType extends FieldItemBase {
 
     $properties['infowindow'] = DataDefinition::create('string')
       ->setLabel(new TranslatableMarkup('InfoWindow message'));
+
+    $properties['routepairs'] = DataDefinition::create('string')
+      ->setLabel(new TranslatableMarkup('Route Object'));
 
     return $properties;
   }

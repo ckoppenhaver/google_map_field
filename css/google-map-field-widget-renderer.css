@@ -68,10 +68,13 @@
 }
 
 #google_map_field_options {
-  flex: 0 0 9em;
+  flex: 0 0 11em;
   order: 1;
 }
 
+.table-listing-active {
+  background-color: #9bff9b;
+}
 
 
 

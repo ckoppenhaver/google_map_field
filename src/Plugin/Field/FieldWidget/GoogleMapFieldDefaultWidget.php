@@ -79,6 +79,18 @@ class GoogleMapFieldDefaultWidget extends WidgetBase {
           'google-map-field-watch-change',
         ],
       ],
+    ];
+
+    $element['routepairs'] = [
+      '#title' => $this->t('Route Object'),
+      '#type' => 'textarea',
+      '#default_value' => isset($items[$delta]->routepairs) ? $items[$delta]->routepairs : NULL,
+      '#attributes' => [
+        'data-routepairs-delta' => $delta,
+        'class' => [
+          'google-map-field-watch-change',
+        ],
+      ],
       '#suffix' => '</div>',
     ];
 
