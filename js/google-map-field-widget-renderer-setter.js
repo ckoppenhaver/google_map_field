@@ -161,25 +161,24 @@
 
       routeIndex = index;
       routeEditIndex = index;
-      $('.table-listing-item').removeClass('table-listing-active');
-      // $('.route-listing-edit').prop('disabled', true);
-      // $('.route-listing-undo').prop('disabled', 'disabled');
-      //
-      //
-      // $('.route-listing-delete').prop('disabled', 'disabled');
 
       $('.route-path-listing').prepend(routeListingRouteOptions(index));
       $('.route-listing-done').prop('disabled', 'disabled');
       $('.route-listing-undo').prop('disabled', 'disabled');
       $('.route-listing-edit').prop('disabled', false);
+      $('.table-listing-item').removeClass('table-listing-active');
+
+      var activeRow = $(".route-path-listing").find("[data-route-index='" + routeEditIndex + "']");
+      $('.route-listing-color', activeRow).val(path[0].color);
+      console.log(path[0].color);
+
 
       flightPathArray[routeEditIndex] = new google.maps.Polyline({
-        // var flightPath = new google.maps.Polyline({
         path: path,
         geodesic: true,
         strokeColor: path[0].color,
         strokeOpacity: 1.0,
-        strokeWeight: 2
+        strokeWeight: path[0].size
       });
       flightPathArray[routeEditIndex].setMap(google_map_field_map);
     });
@@ -230,24 +229,43 @@
           $('.route-listing-delete').prop('disabled', 'disabled');
 
           $('.route-path-listing').prepend(routeListingRouteOptions(routeEditIndex));
+
+          $('.route-listing-color').prop('disabled', false);
+          $('.route-listing-size').prop('disabled', false);
         }
 
+        // routeColor =
+        var activeRow = $(".route-path-listing").find("[data-route-index='" + routeEditIndex + "']");
+        var routeColor = $('.route-listing-color', activeRow).val();
+        var routeSize = $('.route-listing-size', activeRow).val();
+
+
+
+        // console.log($(this).closest('td'));
+        // var activeRow = $(".route-path-listing").find("[data-route-index='" + routeEditIndex + "']");
+        // console.log(temp);
+
+        console.log(routeCoordsTemp);
+
+        routeCoordsTemp.forEach(function(routeCoords, routeCoordsIndex) {
+          routeCoordsTemp[routeCoordsIndex].color = routeColor;
+          routeCoordsTemp[routeCoordsIndex].size = routeSize;
+        });
+
         // Push a route to our route temp object.
-        routeCoordsTemp.push({lat: event.latLng.lat(), lng: event.latLng.lng(), color: 'green'});
+        routeCoordsTemp.push({lat: event.latLng.lat(), lng: event.latLng.lng(), color: routeColor, size: routeSize});
         routeCoords[routeEditIndex] = routeCoordsTemp;
 
         // console.log(routeCoords[routeEditIndex]);
         if (flightPathArray[routeEditIndex] != undefined) {
           flightPathArray[routeEditIndex].setMap(null);
         }
-        console.log(routeCoords[routeEditIndex]);
         flightPathArray[routeEditIndex] = new google.maps.Polyline({
-          // var flightPath = new google.maps.Polyline({
           path: routeCoords[routeEditIndex],
           geodesic: true,
-          strokeColor: routeCoords[routeEditIndex][0].color,
+          strokeColor: routeColor,
           strokeOpacity: 1.0,
-          strokeWeight: 2
+          strokeWeight: routeSize
         });
         flightPathArray[routeEditIndex].setMap(google_map_field_map);
 
@@ -312,12 +330,11 @@
       routeCoords[routeEditIndex].pop();
       flightPathArray[routeEditIndex].setMap(null);
       flightPathArray[routeEditIndex] = new google.maps.Polyline({
-        // var flightPath = new google.maps.Polyline({
         path: routeCoords[routeEditIndex],
         geodesic: true,
-        strokeColor:routeCoords[routeEditIndex][0].color,
+        strokeColor: routeCoords[routeEditIndex][0].color,
         strokeOpacity: 1.0,
-        strokeWeight: 2
+        strokeWeight: routeCoords[routeEditIndex][0].size
       });
       flightPathArray[routeEditIndex].setMap(google_map_field_map);
     });
@@ -329,8 +346,36 @@
       routeCoords[routeEditIndex] = null;
       $('.route-listing-done').click();
       selectedEditRow.remove();
-
     });
+
+    $('.route-path-listing').on('change', '.route-listing-color', function() {
+      // routeCoords[routeEditIndex].pop();
+
+
+
+      var selectedEditRow = $(this).closest('tr');
+      var routeColor = $('.route-listing-color', selectedEditRow).val();
+
+
+      routeCoords[routeEditIndex].forEach(function(routeCoordsitem, routeCoordsIndex) {
+        // console.log(routeCoords);
+        routeCoords[routeEditIndex][routeCoordsIndex].color = routeColor;
+      });
+
+
+      console.log('I changed');
+
+      flightPathArray[routeEditIndex].setMap(null);
+      flightPathArray[routeEditIndex] = new google.maps.Polyline({
+        path: routeCoords[routeEditIndex],
+        geodesic: true,
+        strokeColor: routeCoords[routeEditIndex][0].color,
+        strokeOpacity: 1.0,
+        strokeWeight: routeCoords[routeEditIndex][0].size
+      });
+      flightPathArray[routeEditIndex].setMap(google_map_field_map);
+    });
+
 
 
     return false;
@@ -392,10 +437,12 @@
   toString = function(obj){
     var returnArray = [];
     obj.forEach(function(route, routeIndex) {
-      route.forEach(function(coordPair, coordPairIndex){
-        route[coordPairIndex] = JSON.stringify(coordPair);
-      });
-      returnArray.push(route);
+      if(route) {
+        route.forEach(function(coordPair, coordPairIndex){
+          route[coordPairIndex] = JSON.stringify(coordPair);
+        });
+        returnArray.push(route);
+      }
     });
 
     var temp = obj.reduce(function(acc, cur, i) {
@@ -435,8 +482,8 @@
     tableRow += '<td><select disabled class="route-listing-color">';
     tableRow += '<option value="red">Red</option>';
     tableRow += '<option value="yellow">Yellow</option>';
-    tableRow += '<option value="Green">Green</option>';
-    tableRow += '<option value="Blue">Blue</option>';
+    tableRow += '<option value="green">Green</option>';
+    tableRow += '<option value="blue">Blue</option>';
     tableRow += '</select></td>';
     tableRow += '<td><select disabled class="route-listing-size">';
     tableRow += '<option value="1">1</option>';
