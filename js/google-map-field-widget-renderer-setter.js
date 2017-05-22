@@ -170,8 +170,6 @@
 
       var activeRow = $(".route-path-listing").find("[data-route-index='" + routeEditIndex + "']");
       $('.route-listing-color', activeRow).val(path[0].color);
-      console.log(path[0].color);
-
 
       flightPathArray[routeEditIndex] = new google.maps.Polyline({
         path: path,
@@ -239,14 +237,6 @@
         var routeColor = $('.route-listing-color', activeRow).val();
         var routeSize = $('.route-listing-size', activeRow).val();
 
-
-
-        // console.log($(this).closest('td'));
-        // var activeRow = $(".route-path-listing").find("[data-route-index='" + routeEditIndex + "']");
-        // console.log(temp);
-
-        console.log(routeCoordsTemp);
-
         routeCoordsTemp.forEach(function(routeCoords, routeCoordsIndex) {
           routeCoordsTemp[routeCoordsIndex].color = routeColor;
           routeCoordsTemp[routeCoordsIndex].size = routeSize;
@@ -256,7 +246,6 @@
         routeCoordsTemp.push({lat: event.latLng.lat(), lng: event.latLng.lng(), color: routeColor, size: routeSize});
         routeCoords[routeEditIndex] = routeCoordsTemp;
 
-        // console.log(routeCoords[routeEditIndex]);
         if (flightPathArray[routeEditIndex] != undefined) {
           flightPathArray[routeEditIndex].setMap(null);
         }
@@ -358,12 +347,8 @@
 
 
       routeCoords[routeEditIndex].forEach(function(routeCoordsitem, routeCoordsIndex) {
-        // console.log(routeCoords);
         routeCoords[routeEditIndex][routeCoordsIndex].color = routeColor;
       });
-
-
-      console.log('I changed');
 
       flightPathArray[routeEditIndex].setMap(null);
       flightPathArray[routeEditIndex] = new google.maps.Polyline({
@@ -377,6 +362,29 @@
     });
 
 
+    $('.route-path-listing').on('change', '.route-listing-size', function() {
+      // routeCoords[routeEditIndex].pop();
+
+
+
+      var selectedEditRow = $(this).closest('tr');
+      var routeSize = $('.route-listing-size', selectedEditRow).val();
+
+
+      routeCoords[routeEditIndex].forEach(function(routeCoordsitem, routeCoordsIndex) {
+        routeCoords[routeEditIndex][routeCoordsIndex].size = routeSize;
+      });
+
+      flightPathArray[routeEditIndex].setMap(null);
+      flightPathArray[routeEditIndex] = new google.maps.Polyline({
+        path: routeCoords[routeEditIndex],
+        geodesic: true,
+        strokeColor: routeCoords[routeEditIndex][0].color,
+        strokeOpacity: 1.0,
+        strokeWeight: routeCoords[routeEditIndex][0].size
+      });
+      flightPathArray[routeEditIndex].setMap(google_map_field_map);
+    });
 
     return false;
   };
