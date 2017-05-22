@@ -13,7 +13,15 @@
         var data_lon   = $('input[data-lon-delta="' + data_delta + '"]').val();
         var data_zoom  = $('input[data-zoom-delta="' + data_delta + '"]').attr('value');
         var data_type  = $('input[data-type-delta="' + data_delta + '"]').attr('value');
-        var data_marker  = $('input[data-marker-delta="' + data_delta + '"]').val() === "1";;
+        var data_marker  = $('input[data-marker-delta="' + data_delta + '"]').val() === "1";
+        var routeCoords = $('textarea[data-routepairs-delta="' + data_delta + '"]').val();
+        var routeIndex = 0;
+        var routeEditIndex = 0;
+        var flightPathArray = [];
+        console.log(routeCoords);
+        routeCoords = toObj(routeCoords);
+        console.log('routeCoords 2');
+        console.log(routeCoords);
 
         data_lat = googleMapFieldValidateLat(data_lat);
         data_lon = googleMapFieldValidateLon(data_lon);
@@ -42,6 +50,34 @@
           map: google_map_field_map
         });
 
+
+        routeCoords.forEach(function(path, index) {
+
+          routeIndex = index;
+          routeEditIndex = index;
+
+          // $('.route-path-listing').prepend(routeListingRouteOptions(index));
+          // $('.route-listing-done').prop('disabled', 'disabled');
+          // $('.route-listing-undo').prop('disabled', 'disabled');
+          // $('.route-listing-edit').prop('disabled', false);
+          // $('.table-listing-item').removeClass('table-listing-active');
+          //
+          // var activeRow = $(".route-path-listing").find("[data-route-index='" + routeEditIndex + "']");
+          // $('.route-listing-color', activeRow).val(path[0].color);
+          // console.log(path[0].color);
+
+
+          flightPathArray[routeEditIndex] = new google.maps.Polyline({
+            path: path,
+            geodesic: true,
+            strokeColor: path[0].color,
+            strokeOpacity: 1.0,
+            strokeWeight: path[0].size
+          });
+          flightPathArray[routeEditIndex].setMap(google_map_field_map);
+        });
+
+
         $('#map_setter_' + data_delta).unbind();
         $('#map_setter_' + data_delta).bind('click', function(event) {
           event.preventDefault();
@@ -52,7 +88,7 @@
 
     });  // end .each
 
-  }
+  };
 
   googleMapFieldValidateLat = function(lat) {
     lat = parseFloat(lat);

@@ -47,6 +47,7 @@ class GoogleMapFieldDefaultFormatter extends FormatterBase {
 
       $element['#attached']['library'][] = 'google_map_field/google-map-field-renderer';
       $element['#attached']['library'][] = 'google_map_field/google-map-apis';
+      $element['#attached']['drupalSettings']['google_map_field']['item'.$delta] = $item->routepairs;
 
       $elements[$delta] = $element;
     }
