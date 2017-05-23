@@ -20,7 +20,6 @@
       var show_controls = $('#edit-controls').prop('checked') ? "1" : "0";
       var infowindow_text = $('#edit-infowindow').val();
 
-
       $('input[data-lat-delta="' + delta + '"]').prop('value', latlng.lat()).attr('value', latlng.lat());
       $('input[data-lon-delta="' + delta + '"]').prop('value', latlng.lng()).attr('value', latlng.lng());
       $('input[data-zoom-delta="' + delta + '"]').prop('value', zoom).attr('value', zoom);
@@ -130,7 +129,6 @@
     var routeIndex = 0;
     var routeEditIndex = 0;
     var flightPathArray = [];
-
     routeCoords = toObj(routeCoords);
 
     lat = googleMapFieldValidateLat(lat);
@@ -216,18 +214,14 @@
         });
       }
       else if (mapOptionState == 'set-route') {
-
         // Add a entry to our route listing section.
         if (routeCoords[routeEditIndex] == undefined) {
           $('.table-listing-item').removeClass('table-listing-active');
           $('.route-listing-edit').prop('disabled', true);
           $('.route-listing-undo').prop('disabled', 'disabled');
-
           $('.route-listing-done').prop('disabled', 'disabled');
           $('.route-listing-delete').prop('disabled', 'disabled');
-
           $('.route-path-listing').prepend(routeListingRouteOptions(routeEditIndex));
-
           $('.route-listing-color').prop('disabled', false);
           $('.route-listing-size').prop('disabled', false);
         }
@@ -264,7 +258,6 @@
       google_map_field_map.panTo(event.latLng);
     });
 
-
     // Toggle between setting markers and routes
     $('.map-option-button').on('click', function() {
       $('.map-option-button').prop('disabled', false);
@@ -283,11 +276,9 @@
       $('.route-listing-delete').prop('disabled', 'disabled');
       $('.route-listing-color').prop('disabled', 'disabled');
       $('.route-listing-size').prop('disabled', 'disabled');
-
       $('button', selectedEditRow).prop('disabled', false);
       $('select', selectedEditRow).prop('disabled', false);
       $('.route-listing-edit', selectedEditRow).prop('disabled', 'disabled');
-
       $('.table-listing-item').removeClass('table-listing-active');
 
       selectedEditRow.addClass('table-listing-active');
@@ -304,7 +295,6 @@
       $('.table-listing-item').removeClass('table-listing-active');
 
       if (routeIndex == routeEditIndex) {
-
         routeIndex++;
         routeEditIndex++;
       }
@@ -338,13 +328,8 @@
     });
 
     $('.route-path-listing').on('change', '.route-listing-color', function() {
-      // routeCoords[routeEditIndex].pop();
-
-
-
       var selectedEditRow = $(this).closest('tr');
       var routeColor = $('.route-listing-color', selectedEditRow).val();
-
 
       routeCoords[routeEditIndex].forEach(function(routeCoordsitem, routeCoordsIndex) {
         routeCoords[routeEditIndex][routeCoordsIndex].color = routeColor;
@@ -363,13 +348,8 @@
 
 
     $('.route-path-listing').on('change', '.route-listing-size', function() {
-      // routeCoords[routeEditIndex].pop();
-
-
-
       var selectedEditRow = $(this).closest('tr');
       var routeSize = $('.route-listing-size', selectedEditRow).val();
-
 
       routeCoords[routeEditIndex].forEach(function(routeCoordsitem, routeCoordsIndex) {
         routeCoords[routeEditIndex][routeCoordsIndex].size = routeSize;

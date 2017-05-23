@@ -6,7 +6,6 @@ var google_map_field_map;
   Drupal.behaviors.google_map_field_renderer = {
     attach: function (context, settings) {
 
-      console.log(settings);
       $('.google-map-field .map-container').once('.google-map-field-processed').each(function(index, item) {
         // Get the settings for the map from the Drupal.settings object.
         var lat = $(this).attr('data-lat');
@@ -17,14 +16,8 @@ var google_map_field_map;
         var show_controls = $(this).attr('data-controls-show') === "true";
         var info_window = $(this).attr('data-infowindow') === "true";
         var routeIndex = 0;
-        var routeEditIndex = 0;
         var flightPathArray = [];
         var routeCoords = toObj(settings.google_map_field['item'+index]);
-        // routeCoords = toObj(routeCoords);
-
-        console.log('================');
-        console.log(routeCoords);
-        console.log('--------------');
 
         // Create the map coords and map options.
         var latlng = new google.maps.LatLng(lat, lon);
@@ -49,29 +42,15 @@ var google_map_field_map;
         });
 
         routeCoords.forEach(function(path, index) {
-
           routeIndex = index;
-          routeEditIndex = index;
-
-          // $('.route-path-listing').prepend(routeListingRouteOptions(index));
-          // $('.route-listing-done').prop('disabled', 'disabled');
-          // $('.route-listing-undo').prop('disabled', 'disabled');
-          // $('.route-listing-edit').prop('disabled', false);
-          // $('.table-listing-item').removeClass('table-listing-active');
-          //
-          // var activeRow = $(".route-path-listing").find("[data-route-index='" + routeEditIndex + "']");
-          // $('.route-listing-color', activeRow).val(path[0].color);
-          // console.log(path[0].color);
-
-
-          flightPathArray[routeEditIndex] = new google.maps.Polyline({
+          flightPathArray[routeIndex] = new google.maps.Polyline({
             path: path,
             geodesic: true,
             strokeColor: path[0].color,
             strokeOpacity: 1.0,
             strokeWeight: path[0].size
           });
-          flightPathArray[routeEditIndex].setMap(google_map_field_map);
+          flightPathArray[routeIndex].setMap(google_map_field_map);
         });
 
         if (info_window) {

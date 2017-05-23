@@ -18,10 +18,7 @@
         var routeIndex = 0;
         var routeEditIndex = 0;
         var flightPathArray = [];
-        console.log(routeCoords);
         routeCoords = toObj(routeCoords);
-        console.log('routeCoords 2');
-        console.log(routeCoords);
 
         data_lat = googleMapFieldValidateLat(data_lat);
         data_lon = googleMapFieldValidateLon(data_lon);
@@ -52,21 +49,8 @@
 
 
         routeCoords.forEach(function(path, index) {
-
           routeIndex = index;
           routeEditIndex = index;
-
-          // $('.route-path-listing').prepend(routeListingRouteOptions(index));
-          // $('.route-listing-done').prop('disabled', 'disabled');
-          // $('.route-listing-undo').prop('disabled', 'disabled');
-          // $('.route-listing-edit').prop('disabled', false);
-          // $('.table-listing-item').removeClass('table-listing-active');
-          //
-          // var activeRow = $(".route-path-listing").find("[data-route-index='" + routeEditIndex + "']");
-          // $('.route-listing-color', activeRow).val(path[0].color);
-          // console.log(path[0].color);
-
-
           flightPathArray[routeEditIndex] = new google.maps.Polyline({
             path: path,
             geodesic: true,
