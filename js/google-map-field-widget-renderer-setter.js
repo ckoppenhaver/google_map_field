@@ -29,7 +29,7 @@
       $('input[data-marker-delta="' + delta + '"]').prop('value', show_marker).attr('value', show_marker);
       $('input[data-controls-delta="' + delta + '"]').prop('value', show_controls).attr('value', show_controls);
       $('input[data-infowindow-delta="' + delta + '"]').prop('value', infowindow_text).attr('value', infowindow_text);
-      $('textarea[data-routepairs-delta="' + delta + '"]').prop('value', toString(routeCoords));
+      $('input[data-routepairs-delta="' + delta + '"]').prop('value', toString(routeCoords));
 
       googleMapFieldPreviews(delta);
 
@@ -52,6 +52,10 @@
     dialogHTML += '        <div id="centre_map_results"></div>';
     dialogHTML += '      </div>';
     dialogHTML += '      <div id="gmf_container"></div>';
+    dialogHTML += '      <label>' + Drupal.t('Map Actions') + '</label>';
+    dialogHTML += '      <button disabled type="button" role="button" name="set-marker" id="set-marker" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only button map-option-button">' + Drupal.t('Set Markers') + '</button>';
+    dialogHTML += '      <button type="button" role="button" name="set-route" id="set-route" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only button map-option-button">' + Drupal.t('Set Route') + '</button>';
+    dialogHTML += '      <h3>' + Drupal.t('Map Markers and Routes') + '</h3>';
     dialogHTML += '      <table class="route-path-listing">';
     dialogHTML += '      </table>';
     dialogHTML += '      <div id="infowindow_container">';
@@ -61,20 +65,13 @@
     dialogHTML += '    </div>';
     dialogHTML += '    <div id="google_map_field_options">';
     dialogHTML += '      <label for="edit-zoom">Map Zoom</label>';
-    dialogHTML += '      <select class="form-select" id="edit-zoom" name="field_zoom"><option value="1">1 (Min)</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9 (Default)</option><option value="10">10</option><option value="11">11</option><option value="12">12</option><option value="13">13</option><option value="14">14</option><option value="15">15</option><option value="16">16</option><option value="17">17</option><option value="18">18</option><option value="19">19</option><option value="20">20</option>option value="21">21 (Max)</option></select>';
+    dialogHTML += '      <select class="form-select" id="edit-zoom" name="field_zoom"><option value="1">1 (Min)</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9 (Default)</option><option value="10">10</option><option value="11">11</option><option value="12">12</option><option value="13">13</option><option value="14">14</option><option value="15">15</option><option value="16">16</option><option value="17">17</option><option value="18">18</option><option value="19">19</option><option value="20">20</option><option value="21">21 (Max)</option></select>';
     dialogHTML += '      <label for="edit-type">Map Type</label>';
-    dialogHTML += '      <select class="form-select" id="edit-type" name="field_type"><option value="roadmap">Map</option><option value="satellite">Satellite</option><option value="hybrid">Hybrid</option><option value="terrain">Terrain</option></select>';
+    dialogHTML += '      <select disabled class="form-select" id="edit-type" name="field_type"><option value="roadmap">Map</option><option value="satellite">Satellite</option><option value="hybrid">Hybrid</option><option value="terrain" selected>Terrain</option></select>';
     dialogHTML += '      <label for="edit-width">Map Width</label>';
     dialogHTML += '      <input type="text" id="edit-width" size="5" maxlength="6" name="field-width" value="" />';
     dialogHTML += '      <label for="edit-height">Map Height</label>';
     dialogHTML += '      <input type="text" id="edit-height" size="5" maxlength="6" name="field-height" value="" />';
-    dialogHTML += '      <label for="edit-controls">Enable controls</label>';
-    dialogHTML += '      <input type="checkbox" class="form-checkbox" id="edit-controls" name="field_controls" />';
-    dialogHTML += '      <label for="edit-marker">Enable marker</label>';
-    dialogHTML += '      <input type="checkbox" class="form-checkbox" id="edit-marker" name="field_marker" />';
-    dialogHTML += '      <label>' + Drupal.t('Map Actions') + '</label>';
-    dialogHTML += '      <button disabled type="button" role="button" name="set-marker" id="set-marker" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only button map-option-button">' + Drupal.t('Set Markers') + '</button>';
-    dialogHTML += '      <button type="button" role="button" name="set-route" id="set-route" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only button map-option-button">' + Drupal.t('Set Route') + '</button>';
     dialogHTML += '    </div>';
     dialogHTML += '  </div>';
     dialogHTML += '</div>';
@@ -84,7 +81,7 @@
     dialog = $('#google_map_field_dialog').dialog({
       modal: true,
       autoOpen: false,
-      width: 800,
+      width: 1100,
       height: 640,
       closeOnEscape: true,
       resizable: false,
@@ -124,11 +121,15 @@
     var show_marker = $('input[data-marker-delta="' + delta + '"]').val() === "1";
     var show_controls = $('input[data-controls-delta="' + delta + '"]').val() === "1";
     var infowindow_text = $('input[data-infowindow-delta="' + delta + '"]').attr('value');
-    routeCoords = $('textarea[data-routepairs-delta="' + delta + '"]').val();
+    routeCoords = $('input[data-routepairs-delta="' + delta + '"]').val();
     var routeCoordsTemp = [];
     var routeIndex = 0;
     var routeEditIndex = 0;
     var flightPathArray = [];
+
+    var tempFlightPath;
+    var routeCoordsLast = [];
+
     routeCoords = toObj(routeCoords);
 
     lat = googleMapFieldValidateLat(lat);
@@ -137,13 +138,12 @@
 
     $('#edit-zoom').val(zoom);
     $('#edit-type').val(type);
+    $('#edit-type').val('terrain');
     $('#edit-width').prop('value', width).attr('value', width);
     $('#edit-height').prop('value', height).attr('value', height);
     $('#edit-marker').prop('checked', show_marker);
     $('#edit-controls').prop('checked', show_controls);
     $('#edit-infowindow').val(infowindow_text);
-
-    // $('#edit-controls').prop('checked', controls);
 
     var latlng = new google.maps.LatLng(lat, lon);
     var mapOptions = {
@@ -151,7 +151,7 @@
       center: latlng,
       streetViewControl: false,
       mapTypeId: type,
-      disableDefaultUI: show_controls ? false : true,
+      disableDefaultUI: false,
       disableDoubleClickZoom: true
     };
     google_map_field_map = new google.maps.Map(document.getElementById("gmf_container"), mapOptions);
@@ -161,13 +161,13 @@
       routeEditIndex = index;
 
       $('.route-path-listing').prepend(routeListingRouteOptions(index));
-      $('.route-listing-done').prop('disabled', 'disabled');
-      $('.route-listing-undo').prop('disabled', 'disabled');
       $('.route-listing-edit').prop('disabled', false);
+      $('.route-listing-delete').prop('disabled', false);
       $('.table-listing-item').removeClass('table-listing-active');
 
       var activeRow = $(".route-path-listing").find("[data-route-index='" + routeEditIndex + "']");
       $('.route-listing-color', activeRow).val(path[0].color);
+      $('.route-listing-name', activeRow).val(path[0].name);
 
       flightPathArray[routeEditIndex] = new google.maps.Polyline({
         path: path,
@@ -194,13 +194,14 @@
     marker = new google.maps.Marker({
       position: latlng,
       optimized: false,
-      draggable: true,
-      visible: show_marker,
+      draggable: false,
+      visible: true,
       map: google_map_field_map
     });
 
     // add a click listener for marker placement
     google.maps.event.addListener(google_map_field_map, "click", function(event) {
+      console.log('first click');
       if (mapOptionState == 'set-marker') {
         latlng = event.latLng;
         google_map_field_map.panTo(latlng);
@@ -208,36 +209,39 @@
         marker = new google.maps.Marker({
           position: latlng,
           optimized: false,
-          draggable: true,
-          visible: $('#edit-marker').prop('checked'),
+          draggable: false,
+          visible: true,
           map: google_map_field_map
         });
       }
-      else if (mapOptionState == 'set-route') {
+      else if (mapOptionState === 'set-route') {
         // Add a entry to our route listing section.
-        if (routeCoords[routeEditIndex] == undefined) {
+        if (routeCoords[routeEditIndex] === undefined) {
           $('.table-listing-item').removeClass('table-listing-active');
-          $('.route-listing-edit').prop('disabled', true);
-          $('.route-listing-undo').prop('disabled', 'disabled');
-          $('.route-listing-done').prop('disabled', 'disabled');
-          $('.route-listing-delete').prop('disabled', 'disabled');
           $('.route-path-listing').prepend(routeListingRouteOptions(routeEditIndex));
-          $('.route-listing-color').prop('disabled', false);
-          $('.route-listing-size').prop('disabled', false);
+          var activeRow = $(".route-path-listing").find("[data-route-index='" + routeEditIndex + "']");
+          $('.route-listing-item').prop('disabled', true);
+          $('.route-listing-item', activeRow).prop('disabled', false);
+          $('.route-listing-edit', activeRow).prop('disabled', true);
         }
 
-        // routeColor =
-        var activeRow = $(".route-path-listing").find("[data-route-index='" + routeEditIndex + "']");
+        console.log('thing');
         var routeColor = $('.route-listing-color', activeRow).val();
         var routeSize = $('.route-listing-size', activeRow).val();
+        var routeName = $('.route-listing-name', activeRow).val();
 
         routeCoordsTemp.forEach(function(routeCoords, routeCoordsIndex) {
           routeCoordsTemp[routeCoordsIndex].color = routeColor;
           routeCoordsTemp[routeCoordsIndex].size = routeSize;
+          routeCoordsTemp[routeCoordsIndex].name = routeName;
         });
 
+        routeCoordsLast = [];
+        routeCoordsLast.push({lat: event.latLng.lat(), lng: event.latLng.lng(), color: routeColor, size: routeSize, name: routeName});
+
+
         // Push a route to our route temp object.
-        routeCoordsTemp.push({lat: event.latLng.lat(), lng: event.latLng.lng(), color: routeColor, size: routeSize});
+        routeCoordsTemp.push({lat: event.latLng.lat(), lng: event.latLng.lng(), color: routeColor, size: routeSize, name: routeName});
         routeCoords[routeEditIndex] = routeCoordsTemp;
 
         if (flightPathArray[routeEditIndex] != undefined) {
@@ -254,6 +258,39 @@
 
       }
     });
+
+    google.maps.event.addListener(google_map_field_map, 'mousemove', function(event) {
+      if (mapOptionState === 'set-route' && !jQuery.isEmptyObject(routeCoordsLast)) {
+          var activeRow = $(".route-path-listing").find("[data-route-index='" + routeEditIndex + "']");
+          var routeColor = $('.route-listing-color', activeRow).val();
+          var routeSize = $('.route-listing-size', activeRow).val();
+          var routeName = $('.route-listing-name', activeRow).val();
+
+          routeCoordsTemp.forEach(function(routeCoords, routeCoordsIndex) {
+            routeCoordsTemp[routeCoordsIndex].color = routeColor;
+            routeCoordsTemp[routeCoordsIndex].size = routeSize;
+            // routeCoordsTemp[routeCoordsIndex].name = routeName;
+          });
+
+          // routeCoordsLast = [];
+          routeCoordsLast[1] = {lat: event.latLng.lat(), lng: event.latLng.lng(), color: routeColor, size: routeSize, name: routeName};
+
+
+          if (tempFlightPath !== undefined) {
+            tempFlightPath.setMap(null);
+          }
+          tempFlightPath = new google.maps.Polyline({
+            path: routeCoordsLast,
+            geodesic: true,
+            draggable: false,
+            clickable: false,
+            strokeColor: routeColor,
+            strokeOpacity: 1.0,
+            strokeWeight: routeSize
+          });
+          tempFlightPath.setMap(google_map_field_map);
+      }
+    });
     google.maps.event.addListener(marker, 'dragend', function(event) {
       google_map_field_map.panTo(event.latLng);
     });
@@ -263,36 +300,44 @@
       $('.map-option-button').prop('disabled', false);
       $(this).prop('disabled', 'disabled');
       mapOptionState = $(this).attr('id');
+      if (mapOptionState === 'set-marker') {
+        google_map_field_map.setOptions({draggableCursor : ""});
+      }
+      else if (mapOptionState === 'set-route') {
+        google_map_field_map.setOptions({draggableCursor : "url(http://s3.amazonaws.com/besport.com_images/status-pin.png), auto"});
+      }
     });
 
     // Edit route
     $('.route-path-listing').on('click', '.route-listing-edit', function() {
+      if (mapOptionState !== 'set-route') {
+        $('#set-route').click();
+      }
       var selectedEditRow = $(this).closest('tr');
       routeEditIndex = selectedEditRow.data('route-index');
       routeCoordsTemp = routeCoords[routeEditIndex];
-      $('.route-listing-edit').prop('disabled', 'disabled');
-      $('.route-listing-done').prop('disabled', 'disabled');
-      $('.route-listing-undo').prop('disabled', 'disabled');
-      $('.route-listing-delete').prop('disabled', 'disabled');
-      $('.route-listing-color').prop('disabled', 'disabled');
-      $('.route-listing-size').prop('disabled', 'disabled');
-      $('button', selectedEditRow).prop('disabled', false);
-      $('select', selectedEditRow).prop('disabled', false);
-      $('.route-listing-edit', selectedEditRow).prop('disabled', 'disabled');
-      $('.table-listing-item').removeClass('table-listing-active');
 
+      var activeRow = $(".route-path-listing").find("[data-route-index='" + routeEditIndex + "']");
+      $('.route-listing-item').prop('disabled', true);
+      $('.route-listing-item', activeRow).prop('disabled', false);
+      $('.route-listing-edit', activeRow).prop('disabled', true);
+
+
+      $('.table-listing-item').removeClass('table-listing-active');
       selectedEditRow.addClass('table-listing-active');
+
+
 
     });
     // Finish editing the route
     $('.route-path-listing').on('click', '.route-listing-done', function() {
+
+      $('.route-listing-item').prop('disabled', true);
       $('.route-listing-edit').prop('disabled', false);
-      $('.route-listing-undo').prop('disabled', 'disabled');
       $('.route-listing-delete').prop('disabled', false);
-      $('.route-listing-done').prop('disabled', 'disabled');
-      $('.route-listing-color').prop('disabled', 'disabled');
-      $('.route-listing-size').prop('disabled', 'disabled');
       $('.table-listing-item').removeClass('table-listing-active');
+      routeCoordsLast = [];
+      tempFlightPath.setMap(null);
 
       if (routeIndex == routeEditIndex) {
         routeIndex++;
@@ -319,6 +364,10 @@
     });
 
     $('.route-path-listing').on('click', '.route-listing-delete', function() {
+      if (mapOptionState !== 'set-route') {
+        $('#set-route').click();
+      }
+
       var selectedEditRow = $(this).closest('tr');
       routeEditIndex = selectedEditRow.data('route-index');
       flightPathArray[routeEditIndex].setMap(null);
@@ -365,6 +414,17 @@
       });
       flightPathArray[routeEditIndex].setMap(google_map_field_map);
     });
+
+    $('.route-path-listing').on('change', '.route-listing-name', function() {
+      var activeRow = $(".route-path-listing").find("[data-route-index='" + routeEditIndex + "']");
+      var routeName = $('.route-listing-name', activeRow).val();
+
+      routeCoordsTemp.forEach(function(routeCoords, routeCoordsIndex) {
+        routeCoordsTemp[routeCoordsIndex].name = routeName;
+      });
+    });
+
+
 
     return false;
   };
@@ -462,18 +522,17 @@
 
   routeListingRouteOptions = function(index) {
     var tableRow = '<tr data-route-index="' + index + '" class="table-listing-item table-listing-active">';
-    tableRow += '<td>Route' + (index + 1) + '</td>';
-    tableRow += '<td><button disabled type="button" role="button" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only button route-listing-edit">' + Drupal.t('Edit') + '</button></td>';
-    tableRow += '<td><button type="button" role="button" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only button route-listing-done">' + Drupal.t('Done') + '</button></td>';
-    tableRow += '<td><button type="button" role="button" name="set-route" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only button route-listing-undo">' + Drupal.t('Undo') + '</button></td>';
-    tableRow += '<td><button type="button" role="button" name="set-route" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only button route-listing-delete">' + Drupal.t('Delete') + '</button></td>';
-    tableRow += '<td><select disabled class="route-listing-color">';
-    tableRow += '<option value="red">Red</option>';
-    tableRow += '<option value="yellow">Yellow</option>';
-    tableRow += '<option value="green">Green</option>';
-    tableRow += '<option value="blue">Blue</option>';
+    tableRow += '<td><input disabled class="route-listing-name route-listing-item" id="routename-"'+index + '" value="Route' + (index + 1) + '"/></td>';
+    tableRow += '<td><button disabled type="button" role="button" class="route-listing-item ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only button route-listing-edit">' + Drupal.t('Edit') + '</button></td>';
+    tableRow += '<td><button disabled type="button" role="button" class="route-listing-item ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only button route-listing-done">' + Drupal.t('Done') + '</button></td>';
+    tableRow += '<td><button disabled type="button" role="button" class="route-listing-item mui-button ui-widget ui-state-default ui-corner-all ui-button-text-only button route-listing-undo">' + Drupal.t('Undo') + '</button></td>';
+    tableRow += '<td><button disabled type="button" role="button" class="route-listing-item ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only button route-listing-delete">' + Drupal.t('Delete') + '</button></td>';
+    tableRow += '<td><select disabled class="route-listing-color route-listing-item">';
+    tableRow += '<option value="#FD402A">'+Drupal.t('Closure ')+'</option>';
+    tableRow += '<option value="#73BD54">'+Drupal.t('Detour')+'</option>';
+    tableRow += '<option value="#6870A8">'+Drupal.t('Project Boundries')+'</option>';
     tableRow += '</select></td>';
-    tableRow += '<td><select disabled class="route-listing-size">';
+    tableRow += '<td><select disabled class="route-listing-size route-listing-item">';
     tableRow += '<option value="1">1</option>';
     tableRow += '<option value="2">2</option>';
     tableRow += '<option value="3">3</option>';

@@ -57,7 +57,7 @@ class GoogleMapFieldDefaultWidget extends WidgetBase {
 
     $element['lat'] = [
       '#title' => $this->t('Latitude'),
-      '#type' => 'textfield',
+      '#type' => 'hidden',
       '#size' => 18,
       '#default_value' => isset($items[$delta]->lat) ? $items[$delta]->lat : NULL,
       '#attributes' => [
@@ -70,7 +70,7 @@ class GoogleMapFieldDefaultWidget extends WidgetBase {
 
     $element['lon'] = [
       '#title' => $this->t('Longitude'),
-      '#type' => 'textfield',
+      '#type' => 'hidden',
       '#size' => 18,
       '#default_value' => isset($items[$delta]->lon) ? $items[$delta]->lon : NULL,
       '#attributes' => [
@@ -83,7 +83,7 @@ class GoogleMapFieldDefaultWidget extends WidgetBase {
 
     $element['routepairs'] = [
       '#title' => $this->t('Route Object'),
-      '#type' => 'textarea',
+      '#type' => 'hidden',
       '#default_value' => isset($items[$delta]->routepairs) ? $items[$delta]->routepairs : NULL,
       '#attributes' => [
         'data-routepairs-delta' => $delta,
@@ -104,7 +104,7 @@ class GoogleMapFieldDefaultWidget extends WidgetBase {
 
     $element['type'] = [
       '#type' => 'hidden',
-      '#default_value' => isset($items[$delta]->type) ? $items[$delta]->type : 'roadmap',
+      '#default_value' => isset($items[$delta]->type) ? $items[$delta]->type : 'terrain',
       '#attributes' => [
         'data-type-delta' => $delta,
       ],

@@ -14,7 +14,7 @@
         var data_zoom  = $('input[data-zoom-delta="' + data_delta + '"]').attr('value');
         var data_type  = $('input[data-type-delta="' + data_delta + '"]').attr('value');
         var data_marker  = $('input[data-marker-delta="' + data_delta + '"]').val() === "1";
-        var routeCoords = $('textarea[data-routepairs-delta="' + data_delta + '"]').val();
+        var routeCoords = $('input[data-routepairs-delta="' + data_delta + '"]').val();
         var routeIndex = 0;
         var routeEditIndex = 0;
         var flightPathArray = [];
@@ -35,7 +35,7 @@
           zoomControl: false,
           scrollwheel: false,
           disableDoubleClickZoom: true,
-          disableDefaultUI: true,
+          disableDefaultUI: true
         };
         google_map_field_map = new google.maps.Map(this, mapOptions);
 
@@ -43,7 +43,7 @@
         marker = new google.maps.Marker({
           position: latlng,
           optimized: false,
-          visible: data_marker,
+          visible: true,
           map: google_map_field_map
         });
 
@@ -80,9 +80,9 @@
       return lat;
     }
     else {
-      return '51.524295';
+      return '61.5997222';
     }
-  }
+  };
 
   googleMapFieldValidateLon = function(lon) {
     lon = parseFloat(lon);
@@ -90,14 +90,14 @@
       return lon;
     }
     else {
-      return '-0.127990';
+      return '-149.1127778';
     }
-  }
+  };
 
   googleMapFieldValidateZoom = function(zoom) {
     zoom = parseInt(zoom);
     if (zoom === null || zoom === '' || isNaN(zoom)) {
-      return '9';
+      return '4';
     }
     else {
       return zoom;
