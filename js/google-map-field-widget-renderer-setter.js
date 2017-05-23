@@ -31,6 +31,8 @@
       $('input[data-infowindow-delta="' + delta + '"]').prop('value', infowindow_text).attr('value', infowindow_text);
       $('input[data-routepairs-delta="' + delta + '"]').prop('value', toString(routeCoords));
 
+      console.log(toString(routeCoords));
+
       googleMapFieldPreviews(delta);
 
       $(this).dialog("close");
@@ -223,7 +225,7 @@
           $('.route-listing-item', activeRow).prop('disabled', false);
           $('.route-listing-edit', activeRow).prop('disabled', true);
         }
-        
+
         var routeColor = $('.route-listing-color', activeRow).val();
         var routeSize = $('.route-listing-size', activeRow).val();
         var routeName = $('.route-listing-name', activeRow).val();
@@ -254,6 +256,12 @@
         });
         flightPathArray[routeEditIndex].setMap(google_map_field_map);
 
+      }
+    });
+
+    google.maps.event.addListener(google_map_field_map, "rightclick", function(event) {
+      if (mapOptionState === 'set-route') {
+        $('.route-listing-done').click();
       }
     });
 
@@ -322,6 +330,7 @@
       $('.table-listing-item').removeClass('table-listing-active');
       selectedEditRow.addClass('table-listing-active');
     });
+
     // Finish editing the route
     $('.route-path-listing').on('click', '.route-listing-done', function() {
       $('.route-listing-item').prop('disabled', true);
@@ -362,6 +371,15 @@
       flightPathArray[routeEditIndex].setMap(null);
       routeCoords[routeEditIndex] = null;
       selectedEditRow.remove();
+
+      $('.route-listing-item').prop('disabled', true);
+      $('.route-listing-edit').prop('disabled', false);
+      $('.route-listing-delete').prop('disabled', false);
+      $('.table-listing-item').removeClass('table-listing-active');
+      routeCoordsLast = [];
+      if (tempFlightPath !== undefined) {
+        tempFlightPath.setMap(null);
+      }
       if (routeIndex == routeEditIndex) {
         routeIndex++;
         routeEditIndex++;
@@ -489,8 +507,14 @@
     });
 
     var temp = obj.reduce(function(acc, cur, i) {
-      acc[i] = cur;
-      return acc;
+      // console.log('cur');
+      // console.log(cur);
+      if (cur == null) {
+        return acc;
+      }else {
+        acc[i] = cur;
+        return acc;
+      }
     }, {});
     return JSON.stringify(temp);
   };
