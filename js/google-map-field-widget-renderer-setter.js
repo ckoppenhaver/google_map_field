@@ -201,7 +201,6 @@
 
     // add a click listener for marker placement
     google.maps.event.addListener(google_map_field_map, "click", function(event) {
-      console.log('first click');
       if (mapOptionState == 'set-marker') {
         latlng = event.latLng;
         google_map_field_map.panTo(latlng);
@@ -224,8 +223,7 @@
           $('.route-listing-item', activeRow).prop('disabled', false);
           $('.route-listing-edit', activeRow).prop('disabled', true);
         }
-
-        console.log('thing');
+        
         var routeColor = $('.route-listing-color', activeRow).val();
         var routeSize = $('.route-listing-size', activeRow).val();
         var routeName = $('.route-listing-name', activeRow).val();
@@ -269,7 +267,7 @@
           routeCoordsTemp.forEach(function(routeCoords, routeCoordsIndex) {
             routeCoordsTemp[routeCoordsIndex].color = routeColor;
             routeCoordsTemp[routeCoordsIndex].size = routeSize;
-            // routeCoordsTemp[routeCoordsIndex].name = routeName;
+            routeCoordsTemp[routeCoordsIndex].name = routeName;
           });
 
           // routeCoordsLast = [];
@@ -321,24 +319,17 @@
       $('.route-listing-item').prop('disabled', true);
       $('.route-listing-item', activeRow).prop('disabled', false);
       $('.route-listing-edit', activeRow).prop('disabled', true);
-
-
       $('.table-listing-item').removeClass('table-listing-active');
       selectedEditRow.addClass('table-listing-active');
-
-
-
     });
     // Finish editing the route
     $('.route-path-listing').on('click', '.route-listing-done', function() {
-
       $('.route-listing-item').prop('disabled', true);
       $('.route-listing-edit').prop('disabled', false);
       $('.route-listing-delete').prop('disabled', false);
       $('.table-listing-item').removeClass('table-listing-active');
       routeCoordsLast = [];
       tempFlightPath.setMap(null);
-
       if (routeIndex == routeEditIndex) {
         routeIndex++;
         routeEditIndex++;
@@ -349,7 +340,6 @@
       routeCoordsTemp = [];
 
     });
-
     $('.route-path-listing').on('click', '.route-listing-undo', function() {
       routeCoords[routeEditIndex].pop();
       flightPathArray[routeEditIndex].setMap(null);
@@ -367,13 +357,19 @@
       if (mapOptionState !== 'set-route') {
         $('#set-route').click();
       }
-
       var selectedEditRow = $(this).closest('tr');
       routeEditIndex = selectedEditRow.data('route-index');
       flightPathArray[routeEditIndex].setMap(null);
       routeCoords[routeEditIndex] = null;
-      $('.route-listing-done').click();
       selectedEditRow.remove();
+      if (routeIndex == routeEditIndex) {
+        routeIndex++;
+        routeEditIndex++;
+      }
+      else {
+        routeEditIndex = routeIndex;
+      }
+      routeCoordsTemp = [];
     });
 
     $('.route-path-listing').on('change', '.route-listing-color', function() {
@@ -394,7 +390,6 @@
       });
       flightPathArray[routeEditIndex].setMap(google_map_field_map);
     });
-
 
     $('.route-path-listing').on('change', '.route-listing-size', function() {
       var selectedEditRow = $(this).closest('tr');
