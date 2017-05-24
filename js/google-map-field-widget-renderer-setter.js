@@ -147,6 +147,9 @@
     var markerIndex = 0;
     var markerEditIndex = 0;
 
+
+    var infoWindow = [];
+
     routeCoords = toObj(routeCoords);
     markerCoords = toObj(markerCoords);
 
@@ -230,6 +233,7 @@
       console.log(path);
       console.log('999999999999');
       $('.marker-listing-name', activeRow).val(path[0].name);
+      $('.marker-listing-notes', activeRow).val(path[0].notes);
 
       // drop a marker at the specified lat/lng coords
       markerArray[index] = new google.maps.Marker({
@@ -240,6 +244,22 @@
         map: google_map_field_map,
         icon: path[0].flag
       });
+
+
+      if (infoWindow[index] !== undefined) {
+        infoWindow[index].setMap(null);
+      }
+
+      // infoWindow[index] = new google.maps.InfoWindow({
+      //   content :  path[0].notes,
+      //   position :  path[0],
+      //   disableAutoPan: true
+      // });
+      //
+      // markerArray[index].addListener('click', function() {
+      //   infowindow.open(google_map_field_map,  markerArray[index]);
+      // });
+
     });
 
     if (markerArray[markerEditIndex] != undefined) {
@@ -281,9 +301,10 @@
         activeRow = $(".route-path-listing").find("[data-marker-index='" + markerEditIndex + "']");
         var markerName = $('.marker-listing-name', activeRow).val();
         var markerFlag = $('.marker-listing-flag', activeRow).val();
+        var markerNotes = $('.marker-listing-notes', activeRow).val();
 
         var markerCoordsTemp = [];
-        markerCoordsTemp.push({lat: event.latLng.lat(), lng: event.latLng.lng(), name: markerName, flag: markerFlag});
+        markerCoordsTemp.push({lat: event.latLng.lat(), lng: event.latLng.lng(), name: markerName, flag: markerFlag, notes: markerNotes});
         markerCoords[markerEditIndex] = markerCoordsTemp;
 
 
@@ -303,6 +324,16 @@
           map: google_map_field_map,
           icon: markerFlag
         });
+
+        // if (infoWindow[markerEditIndex] !== undefined) {
+        //   infoWindow[markerEditIndex].setMap(null);
+        // }
+        //
+        // infoWindow[markerEditIndex] = new google.maps.InfoWindow({
+        //   content :  markerNotes,
+        //   position :  markerCoords[markerEditIndex][0],
+        //   disableAutoPan: true
+        // });
 
         // console.log(markerCoords);
       }
@@ -631,6 +662,28 @@
 
       // console.log(markerCoords);
     });
+
+    $('.route-path-listing').on('change', '.marker-listing-notes', function() {
+      console.log('notes');
+      // var activeRow = $(".route-path-listing").find("[data-marker-index='" + markerEditIndex + "']");
+      // var markerName = $('.marker-listing-name', activeRow).val();
+      // markerCoords[markerEditIndex][0].name = markerName;
+
+
+        console.log('notes changed');
+        var activeRow = $(".route-path-listing").find("[data-marker-index='" + markerEditIndex + "']");
+        var markerNotes = $('.marker-listing-notes', activeRow).val();
+        markerCoords[markerEditIndex][0].notes = markerNotes;
+        console.log(markerCoords);
+    });
+
+    // $('.route-path-listing').on('change', '.marker-listing-notes', function() {
+    //   console.log('notes changed');
+    //   var activeRow = $(".route-path-listing").find("[data-marker-index='" + markerEditIndex + "']");
+    //   var markerNotes = $('.marker-listing-notes', activeRow).val();
+    //   markerCoords[markerEditIndex][0].notes = markerNotes;
+    //   console.log(markerCoords);
+    // });
 
     return false;
   };

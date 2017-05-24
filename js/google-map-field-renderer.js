@@ -24,6 +24,8 @@ var google_map_field_map;
         var markerIndex = 0;
         var markerEditIndex = 0;
 
+        var infoWindow = [];
+
         // Create the map coords and map options.
         var latlng = new google.maps.LatLng(lat, lon);
         var mapOptions = {
@@ -71,6 +73,14 @@ var google_map_field_map;
           // $('.marker-listing-delete').prop('disabled', false);
           // $('.table-listing-item').removeClass('table-listing-active');
 
+          infoWindow[index] = new google.maps.InfoWindow({
+            content: path[0].notes
+          });
+
+          console.log('INFO WINDOW');
+          console.log(infoWindow);
+          console.log('END INFO WINDOW');
+
           // drop a marker at the specified lat/lng coords
           markerArray[index] = new google.maps.Marker({
             position: path[0],
@@ -80,18 +90,26 @@ var google_map_field_map;
             map: google_map_field_map,
             icon: path[0].flag
           });
+
+          console.log(markerArray[index]);
+
+          markerArray[index].addListener('click', function() {
+            infoWindow[index].open(google_map_field_map, markerArray[index]);
+          });
+
+
         });
 
-        if (info_window) {
-          var info_markup = $(this).parent().find('.map-infowindow').html();
-          var infowindow = new google.maps.InfoWindow({
-            content: info_markup
-          });
-
-          marker.addListener('click', function () {
-            infowindow.open(google_map_field_map, marker);
-          });
-        }
+        // if (info_window) {
+        //   var info_markup = $(this).parent().find('.map-infowindow').html();
+        //   var infowindow = new google.maps.InfoWindow({
+        //     content: info_markup
+        //   });
+        //
+        //   marker.addListener('click', function () {
+        //     infowindow.open(google_map_field_map, marker);
+        //   });
+        // }
 
       });
 
