@@ -17,7 +17,6 @@ var google_map_field_map;
         var info_window = $(this).attr('data-infowindow') === "true";
         var routeIndex = 0;
         var flightPathArray = [];
-        console.log(settings.google_map_field);
         var routeCoords = toObj(settings.google_map_field.route['item'+index]);
         var markerCoords = toObj(settings.google_map_field.marker['item'+index]);
         var markerArray = [];
@@ -62,7 +61,6 @@ var google_map_field_map;
 
         markerCoords.forEach(function(path, index) {
 
-          console.log(index);
           markerIndex = index;
           markerEditIndex = index;
 
@@ -77,10 +75,6 @@ var google_map_field_map;
             content: path[0].notes
           });
 
-          console.log('INFO WINDOW');
-          console.log(infoWindow);
-          console.log('END INFO WINDOW');
-
           // drop a marker at the specified lat/lng coords
           markerArray[index] = new google.maps.Marker({
             position: path[0],
@@ -90,8 +84,6 @@ var google_map_field_map;
             map: google_map_field_map,
             icon: path[0].flag
           });
-
-          console.log(markerArray[index]);
 
           markerArray[index].addListener('click', function() {
             infoWindow[index].open(google_map_field_map, markerArray[index]);

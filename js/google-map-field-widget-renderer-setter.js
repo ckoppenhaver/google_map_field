@@ -25,7 +25,6 @@
       var show_controls = $('#edit-controls').prop('checked') ? "1" : "0";
       var infowindow_text = $('#edit-infowindow').val();
 
-      console.log('this ran');
       $('input[data-lat-delta="' + delta + '"]').prop('value', lat).attr('value', lat);
       $('input[data-lon-delta="' + delta + '"]').prop('value', lon).attr('value', lon);
       $('input[data-zoom-delta="' + delta + '"]').prop('value', zoom).attr('value', zoom);
@@ -37,11 +36,6 @@
       $('input[data-infowindow-delta="' + delta + '"]').prop('value', infowindow_text).attr('value', infowindow_text);
       $('input[data-routepairs-delta="' + delta + '"]').prop('value', toString(routeCoords));
       $('input[data-markerpairs-delta="' + delta + '"]').prop('value', toString(markerCoords));
-
-      // console.log(routeCoords);
-      // console.log(markerCoords);
-
-
 
       googleMapFieldPreviews(delta);
 
@@ -226,12 +220,6 @@
       $('.table-listing-item').removeClass('table-listing-active');
 
       var activeRow = $(".route-path-listing").find("[data-marker-index='" + markerEditIndex + "']");
-      // console.log(path);
-      // console.log($('.marker-listing-name', activeRow));
-      // console.log(path[0].name);
-      console.log('000000000000000');
-      console.log(path);
-      console.log('999999999999');
       $('.marker-listing-name', activeRow).val(path[0].name);
       $('.marker-listing-notes', activeRow).val(path[0].notes);
 
@@ -250,16 +238,6 @@
         infoWindow[index].setMap(null);
       }
 
-      // infoWindow[index] = new google.maps.InfoWindow({
-      //   content :  path[0].notes,
-      //   position :  path[0],
-      //   disableAutoPan: true
-      // });
-      //
-      // markerArray[index].addListener('click', function() {
-      //   infowindow.open(google_map_field_map,  markerArray[index]);
-      // });
-
     });
 
     if (markerArray[markerEditIndex] != undefined) {
@@ -272,15 +250,6 @@
       $('#edit-zoom').val(google_map_field_map.getZoom());
     });
 
-    // drop a marker at the specified lat/lng coords
-    // marker = new google.maps.Marker({
-    //   position: latlng,
-    //   optimized: false,
-    //   draggable: false,
-    //   visible: true,
-    //   map: google_map_field_map
-    // });
-
     // add a click listener for marker placement
     google.maps.event.addListener(google_map_field_map, "click", function(event) {
       if (mapOptionState == 'set-marker') {
@@ -291,7 +260,7 @@
           $('.table-listing-item').removeClass('table-listing-active');
           $('.route-path-listing').prepend(markerListingMarkerOptions(markerEditIndex));
           var activeRow = $(".route-path-listing").find("[data-marker-index='" + markerEditIndex + "']");
-          console.log(activeRow);
+
 
           $('.marker-listing-item').prop('disabled', true);
           $('.marker-listing-item', activeRow).prop('disabled', false);
@@ -325,17 +294,6 @@
           icon: markerFlag
         });
 
-        // if (infoWindow[markerEditIndex] !== undefined) {
-        //   infoWindow[markerEditIndex].setMap(null);
-        // }
-        //
-        // infoWindow[markerEditIndex] = new google.maps.InfoWindow({
-        //   content :  markerNotes,
-        //   position :  markerCoords[markerEditIndex][0],
-        //   disableAutoPan: true
-        // });
-
-        // console.log(markerCoords);
       }
       else if (mapOptionState === 'set-route') {
         // Add a entry to our route listing section.
@@ -343,7 +301,7 @@
           $('.table-listing-item').removeClass('table-listing-active');
           $('.route-path-listing').prepend(routeListingRouteOptions(routeEditIndex));
           var activeRow = $(".route-path-listing").find("[data-route-index='" + routeEditIndex + "']");
-          console.log(activeRow);
+
           $('.route-listing-item').prop('disabled', true);
           $('.route-listing-item', activeRow).prop('disabled', false);
           $('.route-listing-edit', activeRow).prop('disabled', true);
@@ -425,12 +383,7 @@
           tempFlightPath.setMap(google_map_field_map);
       }
     });
-    // google.maps.event.addListener(marker, 'dragend', function(event) {
-    //   console.log(event.latLng);
-    //   console.log('oweigh');
-    //   google_map_field_map.panTo(event.latLng);
-    //
-    // });
+
 
     // Toggle between setting markers and routes
     $('.map-option-button').on('click', function() {
@@ -562,7 +515,7 @@
     });
 
     $('.route-path-listing').on('change', '.route-listing-name', function() {
-      console.log('firsthing');
+
       var activeRow = $(".route-path-listing").find("[data-route-index='" + routeEditIndex + "']");
       var routeName = $('.route-listing-name', activeRow).val();
 
@@ -588,7 +541,7 @@
     });
 
     $('.route-path-listing').on('click', '.marker-listing-done', function() {
-      console.log('marker done');
+
 
       $('.marker-listing-item').prop('disabled', true);
       $('.marker-listing-edit').prop('disabled', false);
@@ -660,47 +613,30 @@
         icon: markerFlag
       });
 
-      // console.log(markerCoords);
     });
 
     $('.route-path-listing').on('change', '.marker-listing-notes', function() {
-      console.log('notes');
-      // var activeRow = $(".route-path-listing").find("[data-marker-index='" + markerEditIndex + "']");
-      // var markerName = $('.marker-listing-name', activeRow).val();
-      // markerCoords[markerEditIndex][0].name = markerName;
-
-
-        console.log('notes changed');
         var activeRow = $(".route-path-listing").find("[data-marker-index='" + markerEditIndex + "']");
         var markerNotes = $('.marker-listing-notes', activeRow).val();
         markerCoords[markerEditIndex][0].notes = markerNotes;
-        console.log(markerCoords);
     });
-
-    // $('.route-path-listing').on('change', '.marker-listing-notes', function() {
-    //   console.log('notes changed');
-    //   var activeRow = $(".route-path-listing").find("[data-marker-index='" + markerEditIndex + "']");
-    //   var markerNotes = $('.marker-listing-notes', activeRow).val();
-    //   markerCoords[markerEditIndex][0].notes = markerNotes;
-    //   console.log(markerCoords);
-    // });
 
     return false;
   };
 
   doCentreLatLng = function(lat, lng) {
     var latlng = new google.maps.LatLng(lat, lng);
-    // google_map_field_map.panTo(latlng);
-    marker.setMap(null);
-    marker = new google.maps.Marker({
-      position: latlng,
-      draggable: true,
-      visible: $('#edit-marker').prop('checked'),
-      map: google_map_field_map
-    });
-    google.maps.event.addListener(marker, 'dragend', function(event) {
-      // google_map_field_map.panTo(event.latLng);
-    });
+    google_map_field_map.panTo(latlng);
+    // marker.setMap(null);
+    // marker = new google.maps.Marker({
+    //   position: latlng,
+    //   draggable: true,
+    //   visible: $('#edit-marker').prop('checked'),
+    //   map: google_map_field_map
+    // });
+    // google.maps.event.addListener(marker, 'dragend', function(event) {
+    //   google_map_field_map.panTo(event.latLng);
+    // });
   };
 
   doCentre = function() {
@@ -753,8 +689,6 @@
     });
 
     var temp = obj.reduce(function(acc, cur, i) {
-      // console.log('cur');
-      // console.log(cur);
       if (cur == null) {
         return acc;
       }else {
