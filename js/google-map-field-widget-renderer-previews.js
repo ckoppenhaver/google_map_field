@@ -18,6 +18,7 @@
 
         var routeCoords = $('input[data-routepairs-delta="' + data_delta + '"]').val();
         var markerCoords = $('input[data-markerpairs-delta="' + data_delta + '"]').val();
+        console.log(markerCoords);
 
         var routeIndex = 0;
         var routeEditIndex = 0;
@@ -85,13 +86,15 @@
           // $('.marker-listing-delete').prop('disabled', false);
           // $('.table-listing-item').removeClass('table-listing-active');
 
+          console.log(path);
           // drop a marker at the specified lat/lng coords
           markerArray[index] = new google.maps.Marker({
             position: path[0],
             optimized: false,
             draggable: false,
             visible: true,
-            map: google_map_field_map
+            map: google_map_field_map,
+            icon: path[0].flag
           });
         });
 

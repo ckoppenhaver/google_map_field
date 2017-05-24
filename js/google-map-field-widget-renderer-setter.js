@@ -9,7 +9,7 @@
 
   // @todo change to centerLat and centerLng
   var lat;
-  var lng;
+  var lon;
 
   googleMapFieldSetter = function(delta) {
 
@@ -27,7 +27,7 @@
 
       console.log('this ran');
       $('input[data-lat-delta="' + delta + '"]').prop('value', lat).attr('value', lat);
-      $('input[data-lon-delta="' + delta + '"]').prop('value', lng).attr('value', lng);
+      $('input[data-lon-delta="' + delta + '"]').prop('value', lon).attr('value', lon);
       $('input[data-zoom-delta="' + delta + '"]').prop('value', zoom).attr('value', zoom);
       $('input[data-type-delta="' + delta + '"]').prop('value', type).attr('value', type);
       $('input[data-width-delta="' + delta + '"]').prop('value', width).attr('value', width);
@@ -175,16 +175,6 @@
     google_map_field_map = new google.maps.Map(document.getElementById("gmf_container"), mapOptions);
 
 
-    // ######### DEBUGING ################
-    var infoWnd = new google.maps.InfoWindow({
-      content :  google_map_field_map.getCenter().toUrlValue(),
-      position : google_map_field_map.getCenter(),
-      disableAutoPan: true
-    });
-
-    infoWnd.open(google_map_field_map);
-
-
     google_map_field_map.setCenter(new google.maps.LatLng(lat, lon));
 
 
@@ -247,7 +237,8 @@
         optimized: false,
         draggable: false,
         visible: true,
-        map: google_map_field_map
+        map: google_map_field_map,
+        icon: path[0].flag
       });
     });
 
@@ -292,7 +283,7 @@
         var markerFlag = $('.marker-listing-flag', activeRow).val();
 
         var markerCoordsTemp = [];
-        markerCoordsTemp.push({lat: event.latLng.lat(), lng: event.latLng.lng(), name: markerName});
+        markerCoordsTemp.push({lat: event.latLng.lat(), lng: event.latLng.lng(), name: markerName, flag: markerFlag});
         markerCoords[markerEditIndex] = markerCoordsTemp;
 
 
@@ -361,14 +352,8 @@
     });
 
     google.maps.event.addListener(google_map_field_map, "center_changed", function() {
-      infoWnd.setContent(google_map_field_map.getCenter().toUrlValue());
-      infoWnd.setPosition(google_map_field_map.getCenter());
-      infoWnd.open(google_map_field_map);
-
-      console.log(google_map_field_map.getCenter());
-
       lat = google_map_field_map.getCenter().lat();
-      lng = google_map_field_map.getCenter().lng();
+      lon = google_map_field_map.getCenter().lng();
     });
 
     google.maps.event.addListener(google_map_field_map, "rightclick", function(event) {

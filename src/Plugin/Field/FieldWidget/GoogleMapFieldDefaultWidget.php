@@ -84,7 +84,7 @@ class GoogleMapFieldDefaultWidget extends WidgetBase {
     $element['markerpairs'] = [
       '#title' => $this->t('Marker Object'),
       '#type' => 'hidden',
-      '#default_value' => isset($items[$delta]->routepairs) ? $items[$delta]->routepairs : NULL,
+      '#default_value' => isset($items[$delta]->markerpairs) ? $items[$delta]->markerpairs : NULL,
       '#attributes' => [
         'data-markerpairs-delta' => $delta,
         'class' => [

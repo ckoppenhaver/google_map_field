@@ -77,7 +77,8 @@ var google_map_field_map;
             optimized: false,
             draggable: false,
             visible: true,
-            map: google_map_field_map
+            map: google_map_field_map,
+            icon: path[0].flag
           });
         });
 
