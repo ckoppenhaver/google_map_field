@@ -232,6 +232,15 @@
       $('.marker-listing-delete').prop('disabled', false);
       $('.table-listing-item').removeClass('table-listing-active');
 
+      var activeRow = $(".route-path-listing").find("[data-marker-index='" + markerEditIndex + "']");
+      // console.log(path);
+      // console.log($('.marker-listing-name', activeRow));
+      // console.log(path[0].name);
+      console.log('000000000000000');
+      console.log(path);
+      console.log('999999999999');
+      $('.marker-listing-name', activeRow).val(path[0].name);
+
       // drop a marker at the specified lat/lng coords
       markerArray[index] = new google.maps.Marker({
         position: path[0],
@@ -278,11 +287,12 @@
           $('.marker-listing-edit', activeRow).prop('disabled', true);
         }
 
-
-
+        activeRow = $(".route-path-listing").find("[data-marker-index='" + markerEditIndex + "']");
+        var markerName = $('.marker-listing-name', activeRow).val();
+        var markerFlag = $('.marker-listing-flag', activeRow).val();
 
         var markerCoordsTemp = [];
-        markerCoordsTemp.push({lat: event.latLng.lat(), lng: event.latLng.lng()});
+        markerCoordsTemp.push({lat: event.latLng.lat(), lng: event.latLng.lng(), name: markerName});
         markerCoords[markerEditIndex] = markerCoordsTemp;
 
 
@@ -299,10 +309,11 @@
           optimized: false,
           draggable: false,
           visible: true,
-          map: google_map_field_map
+          map: google_map_field_map,
+          icon: markerFlag
         });
 
-        console.log(markerCoords);
+        // console.log(markerCoords);
       }
       else if (mapOptionState === 'set-route') {
         // Add a entry to our route listing section.
@@ -315,7 +326,7 @@
           $('.route-listing-item', activeRow).prop('disabled', false);
           $('.route-listing-edit', activeRow).prop('disabled', true);
         }
-
+        activeRow = $(".route-path-listing").find("[data-route-index='" + routeEditIndex + "']");
         var routeColor = $('.route-listing-color', activeRow).val();
         var routeSize = $('.route-listing-size', activeRow).val();
         var routeName = $('.route-listing-name', activeRow).val();
@@ -535,6 +546,7 @@
     });
 
     $('.route-path-listing').on('change', '.route-listing-name', function() {
+      console.log('firsthing');
       var activeRow = $(".route-path-listing").find("[data-route-index='" + routeEditIndex + "']");
       var routeName = $('.route-listing-name', activeRow).val();
 
@@ -611,7 +623,29 @@
 
     });
 
+    $('.route-path-listing').on('change', '.marker-listing-name', function() {
+      var activeRow = $(".route-path-listing").find("[data-marker-index='" + markerEditIndex + "']");
+      var markerName = $('.marker-listing-name', activeRow).val();
+      markerCoords[markerEditIndex][0].name = markerName;
+    });
 
+    $('.route-path-listing').on('change', '.marker-listing-flag', function() {
+      var activeRow = $(".route-path-listing").find("[data-marker-index='" + markerEditIndex + "']");
+      var markerFlag = $('.marker-listing-flag', activeRow).val();
+      markerCoords[markerEditIndex][0].flag = markerFlag;
+
+      markerArray[markerEditIndex].setMap(null);
+      markerArray[markerEditIndex] = new google.maps.Marker({
+        position: markerCoords[markerEditIndex][0],
+        optimized: false,
+        draggable: false,
+        visible: true,
+        map: google_map_field_map,
+        icon: markerFlag
+      });
+
+      // console.log(markerCoords);
+    });
 
     return false;
   };
@@ -744,10 +778,15 @@
 
   markerListingMarkerOptions = function(index) {
     var tableRow = '<tr data-marker-index="' + index + '" class="table-listing-item table-listing-active">';
-    tableRow += '<td><input disabled class="marker-listing-name marker-listing-item" id="routename-"'+index + '" value="Marker' + (index + 1) + '"/></td>';
+    tableRow += '<td><input disabled class="marker-listing-name marker-listing-item" id="markername-'+index + '" value="Marker' + (index + 1) + '"/></td>';
     tableRow += '<td><button disabled type="button" role="button" class="marker-listing-item ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only button marker-listing-edit">' + Drupal.t('Edit') + '</button></td>';
     tableRow += '<td><button disabled type="button" role="button" class="marker-listing-item ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only button marker-listing-done">' + Drupal.t('Done') + '</button></td>';
     tableRow += '<td><button disabled type="button" role="button" class="marker-listing-item ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only button marker-listing-delete">' + Drupal.t('Delete') + '</button></td>';
+    tableRow += '<td><select disabled class="marker-listing-flag marker-listing-item">';
+    tableRow += '<option value="http://maps.google.com/mapfiles/ms/icons/yellow-dot.png">'+Drupal.t('Project')+'</option>';
+    tableRow += '<option value="http://maps.google.com/mapfiles/ms/icons/red-dot.png">'+Drupal.t('Project with Road Closures')+'</option>';
+    tableRow += '</select></td>';
+    tableRow += '<td><input disabled class="marker-listing-notes marker-listing-item" id="markernote-'+ index + '" value="" placeholder="Note on marker"/></td>';
     tableRow += '</tr>';
 
     return tableRow;
