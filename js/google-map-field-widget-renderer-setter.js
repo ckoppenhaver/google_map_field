@@ -64,10 +64,10 @@
     dialogHTML += '      <h3>' + Drupal.t('Map Markers and Routes') + '</h3>';
     dialogHTML += '      <table class="route-path-listing">';
     dialogHTML += '      </table>';
-    dialogHTML += '      <div id="infowindow_container">';
-    dialogHTML += '        <label for="edit-infowindow">' + Drupal.t('InfoWindow Popup text: (optional)') + '</label>';
-    dialogHTML += '        <textarea class="form-textarea" id="edit-infowindow" name="infowindow" rows="5" cols="70"></textarea>';
-    dialogHTML += '      </div>';
+    // dialogHTML += '      <div id="infowindow_container">';
+    // dialogHTML += '        <label for="edit-infowindow">' + Drupal.t('InfoWindow Popup text: (optional)') + '</label>';
+    // dialogHTML += '        <textarea class="form-textarea" id="edit-infowindow" name="infowindow" rows="5" cols="70"></textarea>';
+    // dialogHTML += '      </div>';
     dialogHTML += '    </div>';
     dialogHTML += '    <div id="google_map_field_options">';
     dialogHTML += '      <label for="edit-zoom">Map Zoom</label>';
@@ -87,8 +87,8 @@
     dialog = $('#google_map_field_dialog').dialog({
       modal: true,
       autoOpen: false,
-      width: 1100,
-      height: 640,
+      width: 1200,
+      height: 840,
       closeOnEscape: true,
       resizable: false,
       draggable: false,
