@@ -5,13 +5,18 @@
   var google_map_field_map;
   var mapOptionState = 'set-marker';
   var routeCoords = [];
+  var markerCoords = [];
+
+  // @todo change to centerLat and centerLng
+  var lat;
+  var lng;
 
   googleMapFieldSetter = function(delta) {
 
     btns = {};
 
     btns[Drupal.t('Insert map')] = function () {
-      var latlng = marker.position;
+      // var latlng = marker.position;
       var zoom = $('#edit-zoom').val();
       var type = $('#edit-type').val();
       var width = $('#edit-width').val();
@@ -20,8 +25,9 @@
       var show_controls = $('#edit-controls').prop('checked') ? "1" : "0";
       var infowindow_text = $('#edit-infowindow').val();
 
-      $('input[data-lat-delta="' + delta + '"]').prop('value', latlng.lat()).attr('value', latlng.lat());
-      $('input[data-lon-delta="' + delta + '"]').prop('value', latlng.lng()).attr('value', latlng.lng());
+      console.log('this ran');
+      $('input[data-lat-delta="' + delta + '"]').prop('value', lat).attr('value', lat);
+      $('input[data-lon-delta="' + delta + '"]').prop('value', lng).attr('value', lng);
       $('input[data-zoom-delta="' + delta + '"]').prop('value', zoom).attr('value', zoom);
       $('input[data-type-delta="' + delta + '"]').prop('value', type).attr('value', type);
       $('input[data-width-delta="' + delta + '"]').prop('value', width).attr('value', width);
@@ -30,8 +36,12 @@
       $('input[data-controls-delta="' + delta + '"]').prop('value', show_controls).attr('value', show_controls);
       $('input[data-infowindow-delta="' + delta + '"]').prop('value', infowindow_text).attr('value', infowindow_text);
       $('input[data-routepairs-delta="' + delta + '"]').prop('value', toString(routeCoords));
+      $('input[data-markerpairs-delta="' + delta + '"]').prop('value', toString(markerCoords));
 
-      console.log(toString(routeCoords));
+      // console.log(routeCoords);
+      // console.log(markerCoords);
+
+
 
       googleMapFieldPreviews(delta);
 
@@ -124,6 +134,7 @@
     var show_controls = $('input[data-controls-delta="' + delta + '"]').val() === "1";
     var infowindow_text = $('input[data-infowindow-delta="' + delta + '"]').attr('value');
     routeCoords = $('input[data-routepairs-delta="' + delta + '"]').val();
+    markerCoords = $('input[data-markerpairs-delta="' + delta + '"]').val();
     var routeCoordsTemp = [];
     var routeIndex = 0;
     var routeEditIndex = 0;
@@ -132,7 +143,12 @@
     var tempFlightPath;
     var routeCoordsLast = [];
 
+    var markerArray = [];
+    var markerIndex = 0;
+    var markerEditIndex = 0;
+
     routeCoords = toObj(routeCoords);
+    markerCoords = toObj(markerCoords);
 
     lat = googleMapFieldValidateLat(lat);
     lon = googleMapFieldValidateLon(lon);
@@ -157,6 +173,21 @@
       disableDoubleClickZoom: true
     };
     google_map_field_map = new google.maps.Map(document.getElementById("gmf_container"), mapOptions);
+
+
+    // ######### DEBUGING ################
+    var infoWnd = new google.maps.InfoWindow({
+      content :  google_map_field_map.getCenter().toUrlValue(),
+      position : google_map_field_map.getCenter(),
+      disableAutoPan: true
+    });
+
+    infoWnd.open(google_map_field_map);
+
+
+    google_map_field_map.setCenter(new google.maps.LatLng(lat, lon));
+
+
     routeCoords.forEach(function(path, index) {
 
       routeIndex = index;
@@ -187,33 +218,91 @@
     }
 
 
+
+
+    markerCoords.forEach(function(path, index) {
+
+      markerIndex = index;
+      markerEditIndex = index;
+
+      $('.route-path-listing').prepend(markerListingMarkerOptions(index));
+
+
+      $('.marker-listing-edit').prop('disabled', false);
+      $('.marker-listing-delete').prop('disabled', false);
+      $('.table-listing-item').removeClass('table-listing-active');
+
+      // drop a marker at the specified lat/lng coords
+      markerArray[index] = new google.maps.Marker({
+        position: path[0],
+        optimized: false,
+        draggable: false,
+        visible: true,
+        map: google_map_field_map
+      });
+    });
+
+    if (markerArray[markerEditIndex] != undefined) {
+      markerIndex++;
+      markerEditIndex++;
+    }
+
     // Add map listener
     google.maps.event.addListener(google_map_field_map, 'zoom_changed', function() {
       $('#edit-zoom').val(google_map_field_map.getZoom());
     });
 
     // drop a marker at the specified lat/lng coords
-    marker = new google.maps.Marker({
-      position: latlng,
-      optimized: false,
-      draggable: false,
-      visible: true,
-      map: google_map_field_map
-    });
+    // marker = new google.maps.Marker({
+    //   position: latlng,
+    //   optimized: false,
+    //   draggable: false,
+    //   visible: true,
+    //   map: google_map_field_map
+    // });
 
     // add a click listener for marker placement
     google.maps.event.addListener(google_map_field_map, "click", function(event) {
       if (mapOptionState == 'set-marker') {
         latlng = event.latLng;
-        google_map_field_map.panTo(latlng);
-        marker.setMap(null);
-        marker = new google.maps.Marker({
-          position: latlng,
+
+        if (markerCoords[markerEditIndex] === undefined) {
+
+          $('.table-listing-item').removeClass('table-listing-active');
+          $('.route-path-listing').prepend(markerListingMarkerOptions(markerEditIndex));
+          var activeRow = $(".route-path-listing").find("[data-marker-index='" + markerEditIndex + "']");
+          console.log(activeRow);
+
+          $('.marker-listing-item').prop('disabled', true);
+          $('.marker-listing-item', activeRow).prop('disabled', false);
+          $('.marker-listing-edit', activeRow).prop('disabled', true);
+        }
+
+
+
+
+        var markerCoordsTemp = [];
+        markerCoordsTemp.push({lat: event.latLng.lat(), lng: event.latLng.lng()});
+        markerCoords[markerEditIndex] = markerCoordsTemp;
+
+
+
+
+
+        // google_map_field_map.panTo(latlng);
+        if (markerArray[markerEditIndex] !== undefined) {
+          markerArray[markerEditIndex].setMap(null);
+        }
+
+        markerArray[markerEditIndex] = new google.maps.Marker({
+          position: markerCoords[markerEditIndex][0],
           optimized: false,
           draggable: false,
           visible: true,
           map: google_map_field_map
         });
+
+        console.log(markerCoords);
       }
       else if (mapOptionState === 'set-route') {
         // Add a entry to our route listing section.
@@ -221,6 +310,7 @@
           $('.table-listing-item').removeClass('table-listing-active');
           $('.route-path-listing').prepend(routeListingRouteOptions(routeEditIndex));
           var activeRow = $(".route-path-listing").find("[data-route-index='" + routeEditIndex + "']");
+          console.log(activeRow);
           $('.route-listing-item').prop('disabled', true);
           $('.route-listing-item', activeRow).prop('disabled', false);
           $('.route-listing-edit', activeRow).prop('disabled', true);
@@ -257,6 +347,17 @@
         flightPathArray[routeEditIndex].setMap(google_map_field_map);
 
       }
+    });
+
+    google.maps.event.addListener(google_map_field_map, "center_changed", function() {
+      infoWnd.setContent(google_map_field_map.getCenter().toUrlValue());
+      infoWnd.setPosition(google_map_field_map.getCenter());
+      infoWnd.open(google_map_field_map);
+
+      console.log(google_map_field_map.getCenter());
+
+      lat = google_map_field_map.getCenter().lat();
+      lng = google_map_field_map.getCenter().lng();
     });
 
     google.maps.event.addListener(google_map_field_map, "rightclick", function(event) {
@@ -297,9 +398,12 @@
           tempFlightPath.setMap(google_map_field_map);
       }
     });
-    google.maps.event.addListener(marker, 'dragend', function(event) {
-      google_map_field_map.panTo(event.latLng);
-    });
+    // google.maps.event.addListener(marker, 'dragend', function(event) {
+    //   console.log(event.latLng);
+    //   console.log('oweigh');
+    //   google_map_field_map.panTo(event.latLng);
+    //
+    // });
 
     // Toggle between setting markers and routes
     $('.map-option-button').on('click', function() {
@@ -338,7 +442,9 @@
       $('.route-listing-delete').prop('disabled', false);
       $('.table-listing-item').removeClass('table-listing-active');
       routeCoordsLast = [];
-      tempFlightPath.setMap(null);
+      if (tempFlightPath !== null) {
+        tempFlightPath.setMap(null);
+      }
       if (routeIndex == routeEditIndex) {
         routeIndex++;
         routeEditIndex++;
@@ -437,6 +543,74 @@
       });
     });
 
+    $('.route-path-listing').on('click', '.marker-listing-edit', function() {
+      if (mapOptionState !== 'set-marker') {
+        $('#set-marker').click();
+      }
+      var selectedEditRow = $(this).closest('tr');
+      markerEditIndex = selectedEditRow.data('marker-index');
+      // routeCoordsTemp = routeCoords[routeEditIndex];
+
+      var activeRow = $(".route-path-listing").find("[data-marker-index='" + markerEditIndex + "']");
+      $('.marker-listing-item').prop('disabled', true);
+      $('.marker-listing-item', activeRow).prop('disabled', false);
+      $('.marker-listing-edit', activeRow).prop('disabled', true);
+      $('.table-listing-item').removeClass('table-listing-active');
+      selectedEditRow.addClass('table-listing-active');
+    });
+
+    $('.route-path-listing').on('click', '.marker-listing-done', function() {
+      console.log('marker done');
+
+      $('.marker-listing-item').prop('disabled', true);
+      $('.marker-listing-edit').prop('disabled', false);
+      $('.marker-listing-delete').prop('disabled', false);
+      $('.table-listing-item').removeClass('table-listing-active');
+
+      if (routeIndex == routeEditIndex) {
+        markerIndex++;
+        markerEditIndex++;
+      }
+      else {
+        markerEditIndex = markerIndex;
+      }
+    });
+
+    $('.route-path-listing').on('click', '.marker-listing-delete', function() {
+      if (mapOptionState !== 'set-marker') {
+        $('#set-marker').click();
+      }
+
+
+      var selectedEditRow = $(this).closest('tr');
+      markerEditIndex = selectedEditRow.data('marker-index');
+
+      // flightPathArray[routeEditIndex].setMap(null);
+      markerArray[markerEditIndex].setMap(null);
+      markerCoords[markerEditIndex] = null;
+
+      selectedEditRow.remove();
+
+      $('.marker-listing-item').prop('disabled', true);
+      $('.marker-listing-edit').prop('disabled', false);
+      $('.marker-listing-delete').prop('disabled', false);
+      $('.table-listing-item').removeClass('table-listing-active');
+
+
+      // if (tempFlightPath !== undefined) {
+      //   tempFlightPath.setMap(null);
+      // }
+
+      if (routeIndex == routeEditIndex) {
+        markerIndex++;
+        markerEditIndex++;
+      }
+      else {
+        markerEditIndex = markerIndex;
+      }
+
+    });
+
 
 
     return false;
@@ -444,7 +618,7 @@
 
   doCentreLatLng = function(lat, lng) {
     var latlng = new google.maps.LatLng(lat, lng);
-    google_map_field_map.panTo(latlng);
+    // google_map_field_map.panTo(latlng);
     marker.setMap(null);
     marker = new google.maps.Marker({
       position: latlng,
@@ -453,7 +627,7 @@
       map: google_map_field_map
     });
     google.maps.event.addListener(marker, 'dragend', function(event) {
-      google_map_field_map.panTo(event.latLng);
+      // google_map_field_map.panTo(event.latLng);
     });
   };
 
@@ -563,6 +737,17 @@
     tableRow += '<option value="9">9</option>';
     tableRow += '<option value="10">10</option>';
     tableRow += '</select></td>';
+    tableRow += '</tr>';
+
+    return tableRow;
+  };
+
+  markerListingMarkerOptions = function(index) {
+    var tableRow = '<tr data-marker-index="' + index + '" class="table-listing-item table-listing-active">';
+    tableRow += '<td><input disabled class="marker-listing-name marker-listing-item" id="routename-"'+index + '" value="Marker' + (index + 1) + '"/></td>';
+    tableRow += '<td><button disabled type="button" role="button" class="marker-listing-item ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only button marker-listing-edit">' + Drupal.t('Edit') + '</button></td>';
+    tableRow += '<td><button disabled type="button" role="button" class="marker-listing-item ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only button marker-listing-done">' + Drupal.t('Done') + '</button></td>';
+    tableRow += '<td><button disabled type="button" role="button" class="marker-listing-item ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only button marker-listing-delete">' + Drupal.t('Delete') + '</button></td>';
     tableRow += '</tr>';
 
     return tableRow;

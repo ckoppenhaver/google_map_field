@@ -17,7 +17,12 @@ var google_map_field_map;
         var info_window = $(this).attr('data-infowindow') === "true";
         var routeIndex = 0;
         var flightPathArray = [];
-        var routeCoords = toObj(settings.google_map_field['item'+index]);
+        console.log(settings.google_map_field);
+        var routeCoords = toObj(settings.google_map_field.route['item'+index]);
+        var markerCoords = toObj(settings.google_map_field.marker['item'+index]);
+        var markerArray = [];
+        var markerIndex = 0;
+        var markerEditIndex = 0;
 
         // Create the map coords and map options.
         var latlng = new google.maps.LatLng(lat, lon);
@@ -34,12 +39,12 @@ var google_map_field_map;
         google.maps.event.trigger(google_map_field_map, 'resize');
 
         // Drop a marker at the specified position.
-        var marker = new google.maps.Marker({
-          position: latlng,
-          optimized: false,
-          visible: show_marker,
-          map: google_map_field_map
-        });
+        // var marker = new google.maps.Marker({
+        //   position: latlng,
+        //   optimized: false,
+        //   visible: show_marker,
+        //   map: google_map_field_map
+        // });
 
         routeCoords.forEach(function(path, index) {
           routeIndex = index;
@@ -51,6 +56,29 @@ var google_map_field_map;
             strokeWeight: path[0].size
           });
           flightPathArray[routeIndex].setMap(google_map_field_map);
+        });
+
+        markerCoords.forEach(function(path, index) {
+
+          console.log(index);
+          markerIndex = index;
+          markerEditIndex = index;
+
+          // $('.route-path-listing').prepend(markerListingMarkerOptions(index));
+
+
+          // $('.marker-listing-edit').prop('disabled', false);
+          // $('.marker-listing-delete').prop('disabled', false);
+          // $('.table-listing-item').removeClass('table-listing-active');
+
+          // drop a marker at the specified lat/lng coords
+          markerArray[index] = new google.maps.Marker({
+            position: path[0],
+            optimized: false,
+            draggable: false,
+            visible: true,
+            map: google_map_field_map
+          });
         });
 
         if (info_window) {

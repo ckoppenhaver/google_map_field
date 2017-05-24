@@ -83,6 +83,11 @@ class GoogleMapFieldType extends FieldItemBase {
           'size' => 'big',
           'not null' => FALSE,
         ],
+        'markerpairs' => [
+          'type' => 'text',
+          'size' => 'big',
+          'not null' => FALSE,
+        ],
       ],
     ];
   }
@@ -131,6 +136,9 @@ class GoogleMapFieldType extends FieldItemBase {
 
     $properties['routepairs'] = DataDefinition::create('string')
       ->setLabel(new TranslatableMarkup('Route Object'));
+
+    $properties['markerpairs'] = DataDefinition::create('string')
+      ->setLabel(new TranslatableMarkup('Marker Object'));
 
     return $properties;
   }

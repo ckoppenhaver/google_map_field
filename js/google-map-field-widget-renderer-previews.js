@@ -14,11 +14,21 @@
         var data_zoom  = $('input[data-zoom-delta="' + data_delta + '"]').attr('value');
         var data_type  = $('input[data-type-delta="' + data_delta + '"]').attr('value');
         var data_marker  = $('input[data-marker-delta="' + data_delta + '"]').val() === "1";
+
+
         var routeCoords = $('input[data-routepairs-delta="' + data_delta + '"]').val();
+        var markerCoords = $('input[data-markerpairs-delta="' + data_delta + '"]').val();
+
         var routeIndex = 0;
         var routeEditIndex = 0;
         var flightPathArray = [];
         routeCoords = toObj(routeCoords);
+
+        var markerArray = [];
+        var markerIndex = 0;
+        var markerEditIndex = 0;
+
+        markerCoords = toObj(markerCoords);
 
         data_lat = googleMapFieldValidateLat(data_lat);
         data_lon = googleMapFieldValidateLon(data_lon);
@@ -40,12 +50,12 @@
         google_map_field_map = new google.maps.Map(this, mapOptions);
 
         // drop a marker at the specified lat/lng coords
-        marker = new google.maps.Marker({
-          position: latlng,
-          optimized: false,
-          visible: true,
-          map: google_map_field_map
-        });
+        // marker = new google.maps.Marker({
+        //   position: latlng,
+        //   optimized: false,
+        //   visible: true,
+        //   map: google_map_field_map
+        // });
 
 
         routeCoords.forEach(function(path, index) {
@@ -60,6 +70,36 @@
           });
           flightPathArray[routeEditIndex].setMap(google_map_field_map);
         });
+
+
+        markerCoords.forEach(function(path, index) {
+
+          console.log(index);
+          markerIndex = index;
+          markerEditIndex = index;
+
+          // $('.route-path-listing').prepend(markerListingMarkerOptions(index));
+          //
+          //
+          // $('.marker-listing-edit').prop('disabled', false);
+          // $('.marker-listing-delete').prop('disabled', false);
+          // $('.table-listing-item').removeClass('table-listing-active');
+
+          // drop a marker at the specified lat/lng coords
+          markerArray[index] = new google.maps.Marker({
+            position: path[0],
+            optimized: false,
+            draggable: false,
+            visible: true,
+            map: google_map_field_map
+          });
+        });
+
+        // if (markerArray[markerEditIndex] != undefined) {
+        //   markerIndex++;
+        //   markerEditIndex++;
+        // }
+
 
 
         $('#map_setter_' + data_delta).unbind();

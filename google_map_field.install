@@ -174,3 +174,13 @@ function google_map_field_update_8003() {
 
   \Drupal::state()->set('google_map_field_8103_processed', $processed_fields);
 }
+
+/**
+ * Adds map marker pairs.
+ */
+function google_map_field_update_8004() {
+  $columns_to_add = ['markerpairs'];
+  $processed_fields = google_map_field_add_columns_to_schema($columns_to_add);
+
+  \Drupal::state()->set('google_map_field_8104_processed', $processed_fields);
+}
