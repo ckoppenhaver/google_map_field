@@ -3,10 +3,33 @@ var google_map_field_map;
 
 (function ($, Drupal) {
 
-  Drupal.behaviors.google_map_field_renderer = {
+  Drupal.behaviors.google_map_all_field_renderer = {
     attach: function (context, settings) {
-      $('.google-map-field:not(.map-all) .map-container').once('.google-map-field-processed').each(function(index, item) {
+      console.log('wheee');
+
+      $('.google-map-field.map-all .map-container').once('.google-map-field-processed').each(function(index, item) {
         // Get the settings for the map from the Drupal.settings object.
+        var routeAllArray = [];
+        var markerAllArray = [];
+        var indexTotal = 0;
+
+        $.each(settings.google_map_field.all.marker, function(markerLoopIndex, markerLoopItems){
+          markerTemp = toObj(settings.google_map_field.all.marker[markerLoopIndex]);
+          $.each(markerTemp, function(markerLoopItemIndex, markerLoopItem){
+            markerAllArray[indexTotal] = markerLoopItem[0];
+            indexTotal++;
+          });
+        });
+
+        indexTotal = 0;
+        $.each(settings.google_map_field.all.route, function(routeLoopItemsIndex, routeLoopItems){
+          routeTemp = toObj(settings.google_map_field.all.route[routeLoopItemsIndex]);
+          $.each(routeTemp, function(routeLoopItemIndex, routeLoopItem){
+            routeAllArray[indexTotal] = routeLoopItem;
+            indexTotal++;
+          });
+        });
+
         var lat = $(this).attr('data-lat');
         var lon = $(this).attr('data-lon');
         var zoom = parseInt($(this).attr('data-zoom'));
@@ -14,8 +37,8 @@ var google_map_field_map;
         var show_controls = $(this).attr('data-controls-show') === "true";
         var routeIndex = 0;
         var flightPathArray = [];
-        var routeCoords = toObj(settings.google_map_field.route['item'+index]);
-        var markerCoords = toObj(settings.google_map_field.marker['item'+index]);
+        var routeCoords = routeAllArray;
+        var markerCoords = markerAllArray;
         var markerArray = [];
         var markerIndex = 0;
         var markerEditIndex = 0;
@@ -52,17 +75,17 @@ var google_map_field_map;
           markerEditIndex = index;
 
           infoWindow[index] = new google.maps.InfoWindow({
-            content: path[0].notes
+            content: path.notes
           });
 
           // drop a marker at the specified lat/lng coords
           markerArray[index] = new google.maps.Marker({
-            position: path[0],
+            position: path,
             optimized: false,
             draggable: false,
             visible: true,
             map: google_map_field_map,
-            icon: path[0].flag
+            icon: path.flag
           });
 
           markerArray[index].addListener('click', function() {
@@ -74,14 +97,14 @@ var google_map_field_map;
     }
   };
 
-  toObj = function(string) {
+  toObj = function(thing) {
     var returnObj = [];
     try {
-      string = JSON.parse(string);
-      string = $.map(string, function(value, index) {
+      thing = JSON.parse(thing);
+      thing = $.map(thing, function(value, index) {
         return [value];
       });
-      string.forEach(function (pathSet, pathIndex){
+      thing.forEach(function (pathSet, pathIndex){
         pathSet.forEach(function(pathCoords, pathCoordsIndex) {
           pathSet[pathCoordsIndex] = JSON.parse(pathCoords);
         });

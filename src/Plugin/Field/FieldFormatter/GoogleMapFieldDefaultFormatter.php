@@ -35,6 +35,7 @@ class GoogleMapFieldDefaultFormatter extends FormatterBase {
         '#show_controls' => $item->controls === "1" ? "true" : "false",
         '#width' => $item->width ? $item->width : '320px',
         '#height' => $item->height ? $item->height : '200px',
+        '#custom_class' => '',
       ];
 
       // Handle markup for InfoWindow popup.

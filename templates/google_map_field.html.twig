@@ -1,7 +1,7 @@
 {% if infowindow is not empty %}
   {% set showInfowindow = "true" %}
 {% endif %}
-<section class="google-map-field">
+<section class="google-map-field {{ custom_class }}">
   {% if name %}
   <h2>{{ name }}</h2>
   {% endif %}

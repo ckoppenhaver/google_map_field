@@ -2,6 +2,7 @@ google-map-field-renderer:
   version: 1.x
   js:
     js/google-map-field-renderer.js: {}
+    js/google-map-all-field-renderer.js: {}
   dependencies:
     - core/jquery
     - core/drupal

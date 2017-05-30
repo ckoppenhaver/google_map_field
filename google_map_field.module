@@ -22,6 +22,7 @@ function google_map_field_theme($existing, $type, $theme, $path) {
         'show_marker' => NULL,
         'show_controls' => NULL,
         'infowindow' => NULL,
+        'custom_class' => NULL,
       ],
       'template' => 'google_map_field',
     ],
