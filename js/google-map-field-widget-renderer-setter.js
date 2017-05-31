@@ -1,4 +1,3 @@
-
 (function ($) {
 
   var dialog;
@@ -9,7 +8,7 @@
   var lat;
   var lon;
 
-  googleMapFieldSetter = function(delta) {
+  googleMapFieldSetter = function (delta) {
 
     btns = {};
 
@@ -91,7 +90,7 @@
       title: Drupal.t('Set Map Marker'),
       dialogClass: 'jquery_ui_dialog-dialog',
       buttons: btns,
-      close: function(event, ui) {
+      close: function (event, ui) {
         $(this).dialog('destroy').remove();
       }
     });
@@ -99,16 +98,16 @@
     dialog.dialog('open');
 
     // Handle map options inside dialog.
-    $('#edit-zoom').change(function() {
+    $('#edit-zoom').change(function () {
       google_map_field_map.setZoom(googleMapFieldValidateZoom($(this).val()));
     });
-    $('#edit-type').change(function() {
+    $('#edit-type').change(function () {
       google_map_field_map.setMapTypeId($(this).val());
     });
-    $('#edit-controls').change(function() {
-      google_map_field_map.setOptions({disableDefaultUI : !$(this).prop('checked')});
+    $('#edit-controls').change(function () {
+      google_map_field_map.setOptions({disableDefaultUI: !$(this).prop('checked')});
     });
-    $('#edit-marker').change(function() {
+    $('#edit-marker').change(function () {
       marker.setVisible($(this).prop('checked'));
     });
 
@@ -165,7 +164,7 @@
 
 
     // Draw routes on map that have already been set.
-    routeCoords.forEach(function(path, index) {
+    routeCoords.forEach(function (path, index) {
       routeIndex = index;
       routeEditIndex = index;
 
@@ -194,7 +193,7 @@
     }
 
     // Draw markers on map that have already been set.
-    markerCoords.forEach(function(path, index) {
+    markerCoords.forEach(function (path, index) {
       markerIndex = index;
       markerEditIndex = index;
 
@@ -228,12 +227,12 @@
     }
 
     // Add map listener
-    google.maps.event.addListener(google_map_field_map, 'zoom_changed', function() {
+    google.maps.event.addListener(google_map_field_map, 'zoom_changed', function () {
       $('#edit-zoom').val(google_map_field_map.getZoom());
     });
 
     // add a click listener for marker placement
-    google.maps.event.addListener(google_map_field_map, "click", function(event) {
+    google.maps.event.addListener(google_map_field_map, "click", function (event) {
       if (mapOptionState == 'set-marker') {
         latlng = event.latLng;
 
@@ -251,10 +250,15 @@
         var markerFlag = $('.marker-listing-flag', activeRow).val();
         var markerNotes = $('.marker-listing-notes', activeRow).val();
         var markerCoordsTemp = [];
-        markerCoordsTemp.push({lat: event.latLng.lat(), lng: event.latLng.lng(), name: markerName, flag: markerFlag, notes: markerNotes});
+        markerCoordsTemp.push({
+          lat: event.latLng.lat(),
+          lng: event.latLng.lng(),
+          name: markerName,
+          flag: markerFlag,
+          notes: markerNotes
+        });
         markerCoords[markerEditIndex] = markerCoordsTemp;
-
-        // google_map_field_map.panTo(latlng);
+        
         if (markerArray[markerEditIndex] !== undefined) {
           markerArray[markerEditIndex].setMap(null);
         }
@@ -285,17 +289,29 @@
         var routeSize = $('.route-listing-size', activeRow).val();
         var routeName = $('.route-listing-name', activeRow).val();
 
-        routeCoordsTemp.forEach(function(routeCoords, routeCoordsIndex) {
+        routeCoordsTemp.forEach(function (routeCoords, routeCoordsIndex) {
           routeCoordsTemp[routeCoordsIndex].color = routeColor;
           routeCoordsTemp[routeCoordsIndex].size = routeSize;
           routeCoordsTemp[routeCoordsIndex].name = routeName;
         });
 
         routeCoordsLast = [];
-        routeCoordsLast.push({lat: event.latLng.lat(), lng: event.latLng.lng(), color: routeColor, size: routeSize, name: routeName});
+        routeCoordsLast.push({
+          lat: event.latLng.lat(),
+          lng: event.latLng.lng(),
+          color: routeColor,
+          size: routeSize,
+          name: routeName
+        });
 
         // Push a route to our route temp object.
-        routeCoordsTemp.push({lat: event.latLng.lat(), lng: event.latLng.lng(), color: routeColor, size: routeSize, name: routeName});
+        routeCoordsTemp.push({
+          lat: event.latLng.lat(),
+          lng: event.latLng.lng(),
+          color: routeColor,
+          size: routeSize,
+          name: routeName
+        });
         routeCoords[routeEditIndex] = routeCoordsTemp;
 
         if (flightPathArray[routeEditIndex] != undefined) {
@@ -313,63 +329,69 @@
       }
     });
 
-    google.maps.event.addListener(google_map_field_map, "center_changed", function() {
+    google.maps.event.addListener(google_map_field_map, "center_changed", function () {
       lat = google_map_field_map.getCenter().lat();
       lon = google_map_field_map.getCenter().lng();
     });
 
-    google.maps.event.addListener(google_map_field_map, "rightclick", function(event) {
+    google.maps.event.addListener(google_map_field_map, "rightclick", function (event) {
       if (mapOptionState === 'set-route') {
         $('.route-listing-done').click();
       }
     });
 
-    google.maps.event.addListener(google_map_field_map, 'mousemove', function(event) {
+    google.maps.event.addListener(google_map_field_map, 'mousemove', function (event) {
       if (mapOptionState === 'set-route' && !jQuery.isEmptyObject(routeCoordsLast)) {
-          var activeRow = $(".route-path-listing").find("[data-route-index='" + routeEditIndex + "']");
-          var routeColor = $('.route-listing-color', activeRow).val();
-          var routeSize = $('.route-listing-size', activeRow).val();
-          var routeName = $('.route-listing-name', activeRow).val();
+        var activeRow = $(".route-path-listing").find("[data-route-index='" + routeEditIndex + "']");
+        var routeColor = $('.route-listing-color', activeRow).val();
+        var routeSize = $('.route-listing-size', activeRow).val();
+        var routeName = $('.route-listing-name', activeRow).val();
 
-          routeCoordsTemp.forEach(function(routeCoords, routeCoordsIndex) {
-            routeCoordsTemp[routeCoordsIndex].color = routeColor;
-            routeCoordsTemp[routeCoordsIndex].size = routeSize;
-            routeCoordsTemp[routeCoordsIndex].name = routeName;
-          });
+        routeCoordsTemp.forEach(function (routeCoords, routeCoordsIndex) {
+          routeCoordsTemp[routeCoordsIndex].color = routeColor;
+          routeCoordsTemp[routeCoordsIndex].size = routeSize;
+          routeCoordsTemp[routeCoordsIndex].name = routeName;
+        });
 
-          routeCoordsLast[1] = {lat: event.latLng.lat(), lng: event.latLng.lng(), color: routeColor, size: routeSize, name: routeName};
+        routeCoordsLast[1] = {
+          lat: event.latLng.lat(),
+          lng: event.latLng.lng(),
+          color: routeColor,
+          size: routeSize,
+          name: routeName
+        };
 
-          if (tempFlightPath !== undefined) {
-            tempFlightPath.setMap(null);
-          }
-          tempFlightPath = new google.maps.Polyline({
-            path: routeCoordsLast,
-            geodesic: true,
-            draggable: false,
-            clickable: false,
-            strokeColor: routeColor,
-            strokeOpacity: 1.0,
-            strokeWeight: routeSize
-          });
-          tempFlightPath.setMap(google_map_field_map);
+        if (tempFlightPath !== undefined) {
+          tempFlightPath.setMap(null);
+        }
+        tempFlightPath = new google.maps.Polyline({
+          path: routeCoordsLast,
+          geodesic: true,
+          draggable: false,
+          clickable: false,
+          strokeColor: routeColor,
+          strokeOpacity: 1.0,
+          strokeWeight: routeSize
+        });
+        tempFlightPath.setMap(google_map_field_map);
       }
     });
 
     // Toggle between setting markers and routes
-    $('.map-option-button').on('click', function() {
+    $('.map-option-button').on('click', function () {
       $('.map-option-button').prop('disabled', false);
       $(this).prop('disabled', 'disabled');
       mapOptionState = $(this).attr('id');
       if (mapOptionState === 'set-marker') {
-        google_map_field_map.setOptions({draggableCursor : ""});
+        google_map_field_map.setOptions({draggableCursor: ""});
       }
       else if (mapOptionState === 'set-route') {
-        google_map_field_map.setOptions({draggableCursor : "url(http://s3.amazonaws.com/besport.com_images/status-pin.png), auto"});
+        google_map_field_map.setOptions({draggableCursor: "url(http://s3.amazonaws.com/besport.com_images/status-pin.png), auto"});
       }
     });
 
     // Edit route
-    $('.route-path-listing').on('click', '.route-listing-edit', function() {
+    $('.route-path-listing').on('click', '.route-listing-edit', function () {
       if (mapOptionState !== 'set-route') {
         $('#set-route').click();
       }
@@ -386,7 +408,7 @@
     });
 
     // Finish editing the route
-    $('.route-path-listing').on('click', '.route-listing-done', function() {
+    $('.route-path-listing').on('click', '.route-listing-done', function () {
       $('.map-item').prop('disabled', true);
       $('.route-listing-edit').prop('disabled', false);
       $('.route-listing-delete').prop('disabled', false);
@@ -409,7 +431,7 @@
       routeCoordsTemp = [];
 
     });
-    $('.route-path-listing').on('click', '.route-listing-undo', function() {
+    $('.route-path-listing').on('click', '.route-listing-undo', function () {
       routeCoords[routeEditIndex].pop();
       flightPathArray[routeEditIndex].setMap(null);
       flightPathArray[routeEditIndex] = new google.maps.Polyline({
@@ -422,7 +444,7 @@
       flightPathArray[routeEditIndex].setMap(google_map_field_map);
     });
 
-    $('.route-path-listing').on('click', '.route-listing-delete', function() {
+    $('.route-path-listing').on('click', '.route-listing-delete', function () {
       if (mapOptionState !== 'set-route') {
         $('#set-route').click();
       }
@@ -451,11 +473,11 @@
       routeCoordsTemp = [];
     });
 
-    $('.route-path-listing').on('change', '.route-listing-color', function() {
+    $('.route-path-listing').on('change', '.route-listing-color', function () {
       var selectedEditRow = $(this).closest('tr');
       var routeColor = $('.route-listing-color', selectedEditRow).val();
 
-      routeCoords[routeEditIndex].forEach(function(routeCoordsitem, routeCoordsIndex) {
+      routeCoords[routeEditIndex].forEach(function (routeCoordsitem, routeCoordsIndex) {
         routeCoords[routeEditIndex][routeCoordsIndex].color = routeColor;
       });
 
@@ -470,11 +492,11 @@
       flightPathArray[routeEditIndex].setMap(google_map_field_map);
     });
 
-    $('.route-path-listing').on('change', '.route-listing-size', function() {
+    $('.route-path-listing').on('change', '.route-listing-size', function () {
       var selectedEditRow = $(this).closest('tr');
       var routeSize = $('.route-listing-size', selectedEditRow).val();
 
-      routeCoords[routeEditIndex].forEach(function(routeCoordsitem, routeCoordsIndex) {
+      routeCoords[routeEditIndex].forEach(function (routeCoordsitem, routeCoordsIndex) {
         routeCoords[routeEditIndex][routeCoordsIndex].size = routeSize;
       });
 
@@ -489,16 +511,16 @@
       flightPathArray[routeEditIndex].setMap(google_map_field_map);
     });
 
-    $('.route-path-listing').on('change', '.route-listing-name', function() {
+    $('.route-path-listing').on('change', '.route-listing-name', function () {
       var activeRow = $(".route-path-listing").find("[data-route-index='" + routeEditIndex + "']");
       var routeName = $('.route-listing-name', activeRow).val();
 
-      routeCoordsTemp.forEach(function(routeCoords, routeCoordsIndex) {
+      routeCoordsTemp.forEach(function (routeCoords, routeCoordsIndex) {
         routeCoordsTemp[routeCoordsIndex].name = routeName;
       });
     });
 
-    $('.route-path-listing').on('click', '.marker-listing-edit', function() {
+    $('.route-path-listing').on('click', '.marker-listing-edit', function () {
       if (mapOptionState !== 'set-marker') {
         $('#set-marker').click();
       }
@@ -513,7 +535,7 @@
       selectedEditRow.addClass('table-listing-active');
     });
 
-    $('.route-path-listing').on('click', '.marker-listing-done', function() {
+    $('.route-path-listing').on('click', '.marker-listing-done', function () {
       $('.map-item').prop('disabled', true);
       $('.marker-listing-edit').prop('disabled', false);
       $('.marker-listing-delete').prop('disabled', false);
@@ -530,7 +552,7 @@
       }
     });
 
-    $('.route-path-listing').on('click', '.marker-listing-delete', function() {
+    $('.route-path-listing').on('click', '.marker-listing-delete', function () {
       if (mapOptionState !== 'set-marker') {
         $('#set-marker').click();
       }
@@ -554,13 +576,13 @@
       }
     });
 
-    $('.route-path-listing').on('change', '.marker-listing-name', function() {
+    $('.route-path-listing').on('change', '.marker-listing-name', function () {
       var activeRow = $(".route-path-listing").find("[data-marker-index='" + markerEditIndex + "']");
       var markerName = $('.marker-listing-name', activeRow).val();
       markerCoords[markerEditIndex][0].name = markerName;
     });
 
-    $('.route-path-listing').on('change', '.marker-listing-flag', function() {
+    $('.route-path-listing').on('change', '.marker-listing-flag', function () {
       var activeRow = $(".route-path-listing").find("[data-marker-index='" + markerEditIndex + "']");
       var markerFlag = $('.marker-listing-flag', activeRow).val();
       markerCoords[markerEditIndex][0].flag = markerFlag;
@@ -577,31 +599,27 @@
 
     });
 
-    $('.route-path-listing').on('change', '.marker-listing-notes', function() {
-        var activeRow = $(".route-path-listing").find("[data-marker-index='" + markerEditIndex + "']");
-        var markerNotes = $('.marker-listing-notes', activeRow).val();
-        markerCoords[markerEditIndex][0].notes = markerNotes;
+    $('.route-path-listing').on('change', '.marker-listing-notes', function () {
+      var activeRow = $(".route-path-listing").find("[data-marker-index='" + markerEditIndex + "']");
+      var markerNotes = $('.marker-listing-notes', activeRow).val();
+      markerCoords[markerEditIndex][0].notes = markerNotes;
+    });
+
+    $("#centre_map_on").keyup(function (event) {
+      if (event.keyCode == 13) {
+        doCentre();
+      }
     });
 
     return false;
   };
 
-  doCentreLatLng = function(lat, lng) {
+  doCentreLatLng = function (lat, lng) {
     var latlng = new google.maps.LatLng(lat, lng);
     google_map_field_map.panTo(latlng);
-    // marker.setMap(null);
-    // marker = new google.maps.Marker({
-    //   position: latlng,
-    //   draggable: true,
-    //   visible: $('#edit-marker').prop('checked'),
-    //   map: google_map_field_map
-    // });
-    // google.maps.event.addListener(marker, 'dragend', function(event) {
-    //   google_map_field_map.panTo(event.latLng);
-    // });
   };
 
-  doCentre = function() {
+  doCentre = function () {
     var centreOnVal = $('#centre_map_on').val();
 
     if (centreOnVal == '' || centreOnVal == null) {
@@ -615,7 +633,7 @@
     }
 
     var geocoder = new google.maps.Geocoder();
-    geocoder.geocode({ 'address': centreOnVal}, function (result, status) {
+    geocoder.geocode({'address': centreOnVal}, function (result, status) {
       $('#centre_map_results').html('');
       if (status == 'OK') {
         doCentreLatLng(result[0].geometry.location.lat(), result[0].geometry.location.lng());
@@ -639,21 +657,21 @@
 
   };
 
-  toString = function(obj){
+  toString = function (obj) {
     var returnArray = [];
-    obj.forEach(function(route, routeIndex) {
-      if(route) {
-        route.forEach(function(coordPair, coordPairIndex){
+    obj.forEach(function (route, routeIndex) {
+      if (route) {
+        route.forEach(function (coordPair, coordPairIndex) {
           route[coordPairIndex] = JSON.stringify(coordPair);
         });
         returnArray.push(route);
       }
     });
 
-    var temp = obj.reduce(function(acc, cur, i) {
+    var temp = obj.reduce(function (acc, cur, i) {
       if (cur == null) {
         return acc;
-      }else {
+      } else {
         acc[i] = cur;
         return acc;
       }
@@ -661,15 +679,15 @@
     return JSON.stringify(temp);
   };
 
-  toObj = function(string) {
+  toObj = function (string) {
     var returnObj = [];
     try {
       string = JSON.parse(string);
-      string = $.map(string, function(value, index) {
+      string = $.map(string, function (value, index) {
         return [value];
       });
-      string.forEach(function (pathSet, pathIndex){
-        pathSet.forEach(function(pathCoords, pathCoordsIndex) {
+      string.forEach(function (pathSet, pathIndex) {
+        pathSet.forEach(function (pathCoords, pathCoordsIndex) {
           pathSet[pathCoordsIndex] = JSON.parse(pathCoords);
         });
         returnObj.push(pathSet);
@@ -681,17 +699,17 @@
     }
   };
 
-  routeListingRouteOptions = function(index) {
+  routeListingRouteOptions = function (index) {
     var tableRow = '<tr data-route-index="' + index + '" class="table-listing-item table-listing-active">';
-    tableRow += '<td><input disabled class="route-listing-name route-listing-item map-item" id="routename-"'+index + '" value="Route' + (index + 1) + '"/></td>';
+    tableRow += '<td><input disabled class="route-listing-name route-listing-item map-item" id="routename-"' + index + '" value="Route' + (index + 1) + '"/></td>';
     tableRow += '<td><button disabled type="button" role="button" class="map-item route-listing-item ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only button route-listing-edit">' + Drupal.t('Edit') + '</button></td>';
     tableRow += '<td><button disabled type="button" role="button" class="map-item route-listing-item ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only button route-listing-done map-done">' + Drupal.t('Done') + '</button></td>';
     tableRow += '<td><button disabled type="button" role="button" class="map-item route-listing-item mui-button ui-widget ui-state-default ui-corner-all ui-button-text-only button route-listing-undo">' + Drupal.t('Undo') + '</button></td>';
     tableRow += '<td><button disabled type="button" role="button" class="map-item route-listing-item ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only button route-listing-delete">' + Drupal.t('Delete') + '</button></td>';
     tableRow += '<td><select disabled class="map-item route-listing-color route-listing-item">';
-    tableRow += '<option value="#FD402A">'+Drupal.t('Closure ')+'</option>';
-    tableRow += '<option value="#73BD54">'+Drupal.t('Detour')+'</option>';
-    tableRow += '<option value="#6870A8">'+Drupal.t('Project Boundries')+'</option>';
+    tableRow += '<option value="#FD402A">' + Drupal.t('Closure ') + '</option>';
+    tableRow += '<option value="#73BD54">' + Drupal.t('Detour') + '</option>';
+    tableRow += '<option value="#6870A8">' + Drupal.t('Project Boundries') + '</option>';
     tableRow += '</select></td>';
     tableRow += '<td><select disabled class="map-item route-listing-size route-listing-item">';
     tableRow += '<option value="1">1</option>';
@@ -710,17 +728,17 @@
     return tableRow;
   };
 
-  markerListingMarkerOptions = function(index) {
+  markerListingMarkerOptions = function (index) {
     var tableRow = '<tr data-marker-index="' + index + '" class="map-item table-listing-item table-listing-active">';
-    tableRow += '<td><input disabled class="map-item marker-listing-name marker-listing-item" id="markername-'+index + '" value="Marker' + (index + 1) + '"/></td>';
+    tableRow += '<td><input disabled class="map-item marker-listing-name marker-listing-item" id="markername-' + index + '" value="Marker' + (index + 1) + '"/></td>';
     tableRow += '<td><button disabled type="button" role="button" class="map-item marker-listing-item ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only button marker-listing-edit">' + Drupal.t('Edit') + '</button></td>';
     tableRow += '<td><button disabled type="button" role="button" class="map-item marker-listing-item ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only button marker-listing-done map-done">' + Drupal.t('Done') + '</button></td>';
     tableRow += '<td><button disabled type="button" role="button" class="map-item marker-listing-item ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only button marker-listing-delete">' + Drupal.t('Delete') + '</button></td>';
     tableRow += '<td><select disabled class="map-item marker-listing-flag marker-listing-item">';
-    tableRow += '<option value="http://maps.google.com/mapfiles/ms/icons/yellow-dot.png">'+Drupal.t('Project')+'</option>';
-    tableRow += '<option value="http://maps.google.com/mapfiles/ms/icons/red-dot.png">'+Drupal.t('Project with Road Closures')+'</option>';
+    tableRow += '<option value="http://maps.google.com/mapfiles/ms/icons/yellow-dot.png">' + Drupal.t('Project') + '</option>';
+    tableRow += '<option value="http://maps.google.com/mapfiles/ms/icons/red-dot.png">' + Drupal.t('Project with Road Closures') + '</option>';
     tableRow += '</select></td>';
-    tableRow += '<td><input disabled class="map-item marker-listing-notes marker-listing-item" id="markernote-'+ index + '" value="" placeholder="Note on marker"/></td>';
+    tableRow += '<td><input disabled class="map-item marker-listing-notes marker-listing-item" id="markernote-' + index + '" value="" placeholder="Note on marker"/></td>';
     tableRow += '</tr>';
 
     return tableRow;
