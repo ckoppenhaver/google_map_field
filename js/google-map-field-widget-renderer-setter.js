@@ -258,7 +258,7 @@
           notes: markerNotes
         });
         markerCoords[markerEditIndex] = markerCoordsTemp;
-        
+
         if (markerArray[markerEditIndex] !== undefined) {
           markerArray[markerEditIndex].setMap(null);
         }
@@ -454,7 +454,6 @@
       routeCoords[routeEditIndex] = null;
       selectedEditRow.remove();
 
-      // $('.route-listing-item').prop('disabled', true);
       $('.map-item').prop('disabled', true);
       $('.route-listing-edit').prop('disabled', false);
       $('.route-listing-delete').prop('disabled', false);
