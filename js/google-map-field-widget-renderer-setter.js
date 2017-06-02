@@ -386,7 +386,7 @@
         google_map_field_map.setOptions({draggableCursor: ""});
       }
       else if (mapOptionState === 'set-route') {
-        google_map_field_map.setOptions({draggableCursor: "url(http://s3.amazonaws.com/besport.com_images/status-pin.png), auto"});
+        google_map_field_map.setOptions({draggableCursor: "url(/modules/contrib/google_map_field/img/SP-002_DOT_Closure.png), auto"});
       }
     });
 
@@ -475,6 +475,18 @@
     $('.route-path-listing').on('change', '.route-listing-color', function () {
       var selectedEditRow = $(this).closest('tr');
       var routeColor = $('.route-listing-color', selectedEditRow).val();
+
+      switch (routeColor) {
+        case '#FD402A':
+          google_map_field_map.setOptions({draggableCursor: "url(/modules/contrib/google_map_field/img/SP-002_DOT_Closure.png), auto"});
+          break;
+        case '#73BD54':
+          google_map_field_map.setOptions({draggableCursor: "url(/modules/contrib/google_map_field/img/SP-002_DOT_Detour.png), auto"});
+          break;
+        case '#6870A8':
+          google_map_field_map.setOptions({draggableCursor: "url(/modules/contrib/google_map_field/img/SP-002_DOT_Project_Boundries.png), auto"});
+          break;
+      }
 
       routeCoords[routeEditIndex].forEach(function (routeCoordsitem, routeCoordsIndex) {
         routeCoords[routeEditIndex][routeCoordsIndex].color = routeColor;
