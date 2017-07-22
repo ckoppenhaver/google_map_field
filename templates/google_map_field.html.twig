@@ -2,6 +2,13 @@
   {% set showInfowindow = "true" %}
 {% endif %}
 <section class="google-map-field {{ custom_class }}">
+  {% if region_selector %}
+    <select id="region-selector">
+      {% for regionId, region in regions %}
+        <option value="{{ regionId }}">{{ region }}</option>
+      {% endfor %}
+    </select>
+  {% endif %}
   {% if name %}
   <h2>{{ name }}</h2>
   {% endif %}
