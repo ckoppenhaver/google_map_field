@@ -11,7 +11,6 @@ var google_map_field_map;
       });
 
       $('#region-selector', context).on('change', function(){
-        // console.log('ran');
         $(document, context).trigger('region-change');
         var mapContainer = $(this).parent().find('.map-container')[0];
         paintMap(context, settings, mapContainer);
@@ -32,12 +31,13 @@ var google_map_field_map;
     var infoWindow = [];
     var markerIndex = 0;
     var routeObj = [];
+    var markersSet = 0;
 
 
 // Create the map coords and map options.
     var latlng = new google.maps.LatLng(lat, lon);
     var mapOptions = {
-      zoom: zoom,
+      zoom: 14,
       center: latlng,
       streetViewControl: false,
       mapTypeId: type,
@@ -70,6 +70,7 @@ var google_map_field_map;
       });
     }
 
+    var LatLngList = [];
     // If Markers are enabled gather data and display the markers.
     if (google_map_field_settings.marker) {
       $.each(settings.google_map_field.all.marker, function (markerLoopIndex) {
@@ -79,7 +80,11 @@ var google_map_field_map;
         ) {
           markerTemp = toObj(settings.google_map_field.all.marker[markerLoopIndex]);
           $.each(markerTemp, function (markerLoopItemIndex, markerLoopItem) {
+
+            LatLngList.push(new google.maps.LatLng (markerLoopItem[0].lat, markerLoopItem[0].lng));
+
             if (google_map_field_settings.marker) {
+              markersSet++;
 
               // drop a marker at the specified lat/lng coords
               markerArray[markerIndex] = new google.maps.Marker({
@@ -106,6 +111,17 @@ var google_map_field_map;
         }
       });
     }
+    latlngbounds = new google.maps.LatLngBounds();
+    LatLngList.forEach(function(latLng){
+      latlngbounds.extend(latLng);
+    });
+
+    google_map_field_map.setCenter(latlngbounds.getCenter());
+    if (markersSet > 1){
+      google_map_field_map.fitBounds(latlngbounds);
+    }
+
+
   };
 
   toObj = function(string) {

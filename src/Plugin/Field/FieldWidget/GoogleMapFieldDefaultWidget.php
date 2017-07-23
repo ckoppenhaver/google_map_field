@@ -23,6 +23,7 @@ class GoogleMapFieldDefaultWidget extends WidgetBase {
    * {@inheritdoc}
    */
   public function formElement(FieldItemListInterface $items, $delta, array $element, array &$form, FormStateInterface $form_state) {
+    global $base_url;
 
     $element += [
       '#type' => 'fieldset',
@@ -30,6 +31,7 @@ class GoogleMapFieldDefaultWidget extends WidgetBase {
     ];
     $element['#attached']['library'][] = 'google_map_field/google-map-field-widget-renderer';
     $element['#attached']['library'][] = 'google_map_field/google-map-apis';
+    $element['#attached']['drupalSettings']['google_map_field']['path'] = $base_url . '/' . drupal_get_path('module', 'google_map_field');
 
     $element['preview'] = [
       '#type' => 'item',

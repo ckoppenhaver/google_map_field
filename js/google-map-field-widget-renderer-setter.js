@@ -1,4 +1,4 @@
-(function ($) {
+(function ($, Drupal) {
 
   var dialog;
   var google_map_field_map;
@@ -11,6 +11,9 @@
   googleMapFieldSetter = function (delta) {
 
     btns = {};
+    var googlemapFieldPath = drupalSettings.google_map_field.path;
+
+    console.log(googlemapFieldPath + "/img/SP-002_DOT_Closure.png), auto");
 
     btns[Drupal.t('Insert map')] = function () {
       $('.table-listing-active').find('.map-done').click();
@@ -134,6 +137,7 @@
     var markerIndex = 0;
     var markerEditIndex = 0;
     var infoWindow = [];
+
 
     routeCoords = toObj(routeCoords);
     markerCoords = toObj(markerCoords);
@@ -386,7 +390,7 @@
         google_map_field_map.setOptions({draggableCursor: ""});
       }
       else if (mapOptionState === 'set-route') {
-        google_map_field_map.setOptions({draggableCursor: "url(/modules/contrib/google_map_field/img/SP-002_DOT_Closure.png), auto"});
+        google_map_field_map.setOptions({draggableCursor: "url(" + googlemapFieldPath + "/img/SP-002_DOT_Closure.png), auto"});
       }
     });
 
@@ -416,6 +420,7 @@
       $('.marker-listing-delete').prop('disabled', false);
 
       $('.table-listing-item').removeClass('table-listing-active');
+      google_map_field_map.setOptions({draggableCursor: "url(" + googlemapFieldPath + "/img/SP-002_DOT_Closure.png), auto"});
       routeCoordsLast = [];
 
       if (tempFlightPath != null) {
@@ -476,15 +481,17 @@
       var selectedEditRow = $(this).closest('tr');
       var routeColor = $('.route-listing-color', selectedEditRow).val();
 
+      console.log('hello');
+      console.log(drupalSettings);
       switch (routeColor) {
         case '#FD402A':
-          google_map_field_map.setOptions({draggableCursor: "url(/modules/contrib/google_map_field/img/SP-002_DOT_Closure.png), auto"});
+          google_map_field_map.setOptions({draggableCursor: "url(" + googlemapFieldPath + "/img/SP-002_DOT_Closure.png), auto"});
           break;
         case '#73BD54':
-          google_map_field_map.setOptions({draggableCursor: "url(/modules/contrib/google_map_field/img/SP-002_DOT_Detour.png), auto"});
+          google_map_field_map.setOptions({draggableCursor: "url(" + googlemapFieldPath + "/img/SP-002_DOT_Detour.png), auto"});
           break;
         case '#6870A8':
-          google_map_field_map.setOptions({draggableCursor: "url(/modules/contrib/google_map_field/img/SP-002_DOT_Project_Boundries.png), auto"});
+          google_map_field_map.setOptions({draggableCursor: "url(" + googlemapFieldPath + "/img/SP-002_DOT_Project_Boundries.png), auto"});
           break;
       }
 
@@ -755,4 +762,4 @@
     return tableRow;
   };
 
-})(jQuery);
+})(jQuery, Drupal);
