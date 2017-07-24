@@ -76,6 +76,6 @@
   background-color: #9bff9b;
 }
 
-
-
-
+.map__error-message {
+  display: none;
+}

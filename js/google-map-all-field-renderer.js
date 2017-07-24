@@ -111,16 +111,25 @@ var google_map_field_map;
         }
       });
     }
-    latlngbounds = new google.maps.LatLngBounds();
-    LatLngList.forEach(function(latLng){
-      latlngbounds.extend(latLng);
-    });
+    if (markersSet > 0) {
+      $('.map__error-message').hide();
+      console.log('pang');
+      latlngbounds = new google.maps.LatLngBounds();
+      LatLngList.forEach(function(latLngNew){
+        latlngbounds.extend(latLngNew);
+      });
 
-    google_map_field_map.setCenter(latlngbounds.getCenter());
-    if (markersSet > 1){
-      google_map_field_map.fitBounds(latlngbounds);
+      google_map_field_map.setCenter(latlngbounds.getCenter());
+      if (markersSet > 1){
+        google_map_field_map.fitBounds(latlngbounds);
+      }
     }
+    else {
+      google_map_field_map.setZoom(5);
+      google_map_field_map.setCenter(latlng);
+      $('.map__error-message').show();
 
+    }
 
   };
 

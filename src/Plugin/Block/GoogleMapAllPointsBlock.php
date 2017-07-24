@@ -44,8 +44,8 @@ class GoogleMapAllPointsBlock extends BlockBase  implements BlockPluginInterface
     $element = [
       '#theme' => 'google_map_field',
       '#name' => "",
-      '#lat' => "64.098813071013",
-      '#lon' => "-150.71678170625",
+      '#lat' => $config['google_map_field_default_lat'],
+      '#lon' => $config['google_map_field_default_lon'],
       '#zoom' => "4",
       '#type' => "terrain",
       '#show_marker' => "true",
@@ -118,6 +118,20 @@ class GoogleMapAllPointsBlock extends BlockBase  implements BlockPluginInterface
       '#title' => $this->t('Show Region Selector?'),
       '#description' => $this->t('Checking this will show the region selector on the map'),
       '#default_value' => isset($config['google_map_field_show_region_selector']) ? $config['google_map_field_show_region_selector'] : FALSE,
+    );
+
+    $form['google_map_field_default_lat'] = array(
+      '#type' => 'textfield',
+      '#title' => $this->t('Default Latitude  '),
+      '#description' => $this->t('The default Latitude  value for the map'),
+      '#default_value' => isset($config['google_map_field_default_lat']) ? $config['google_map_field_default_lat'] : '64.098813071013',
+    );
+
+    $form['google_map_field_default_lon'] = array(
+      '#type' => 'textfield',
+      '#title' => $this->t('Default Longitude '),
+      '#description' => $this->t('The default Longitude value for the map'),
+      '#default_value' => isset($config['google_map_field_default_lon']) ? $config['google_map_field_default_lon'] : '-150.71678170625',
     );
 
     return $form;
