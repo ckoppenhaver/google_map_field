@@ -125,7 +125,6 @@ var google_map_field_map;
       }
     }
     else {
-      google_map_field_map.setCenter(latlng);
       $('.map__error-message').show();
 
     }

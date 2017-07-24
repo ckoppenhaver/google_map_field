@@ -127,12 +127,14 @@ class GoogleMapAllPointsBlock extends BlockBase  implements BlockPluginInterface
       '#type' => 'textfield',
       '#title' => $this->t('Default Latitude'),
       '#description' => $this->t('The default Latitude value for the map'),
+      '#default_value' => (isset($config['google_map_field_default_lat']) ? $config['google_map_field_default_lat'] : '64.098813071013'),
     );
 
     $form['google_map_field_default_lon'] = array(
       '#type' => 'textfield',
       '#title' => $this->t('Default Longitude'),
       '#description' => $this->t('The default Longitude value for the map'),
+      '#default_value' => (isset($config['google_map_field_default_lon']) ? $config['google_map_field_default_lon'] : '-150.71678170625'),
     );
 
     $form['google_map_field_default_zoom'] = [
@@ -154,6 +156,7 @@ class GoogleMapAllPointsBlock extends BlockBase  implements BlockPluginInterface
         '13' => $this->t('13'),
         '14' => $this->t('14'),
       ],
+      '#default_value' => isset($config['google_map_field_default_zoom']) ? $config['google_map_field_default_zoom'] : "5",
     ];
 
     return $form;
