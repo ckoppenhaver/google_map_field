@@ -41,12 +41,13 @@ class GoogleMapAllPointsBlock extends BlockBase  implements BlockPluginInterface
       }
     }
 
+    $stop = '';
     $element = [
       '#theme' => 'google_map_field',
       '#name' => "",
       '#lat' => $config['google_map_field_default_lat'],
       '#lon' => $config['google_map_field_default_lon'],
-      '#zoom' => "4",
+      '#zoom' => $config['google_map_field_default_zoom'],
       '#type' => "terrain",
       '#show_marker' => "true",
       '#show_controls' => "true",
@@ -92,6 +93,8 @@ class GoogleMapAllPointsBlock extends BlockBase  implements BlockPluginInterface
 
     $config = $this->getConfiguration();
 
+    $stop = '';
+
     $form['google_map_field_show_marker'] = array(
       '#type' => 'checkbox',
       '#title' => $this->t('Show Markers?'),
@@ -122,17 +125,36 @@ class GoogleMapAllPointsBlock extends BlockBase  implements BlockPluginInterface
 
     $form['google_map_field_default_lat'] = array(
       '#type' => 'textfield',
-      '#title' => $this->t('Default Latitude  '),
-      '#description' => $this->t('The default Latitude  value for the map'),
-      '#default_value' => isset($config['google_map_field_default_lat']) ? $config['google_map_field_default_lat'] : '64.098813071013',
+      '#title' => $this->t('Default Latitude'),
+      '#description' => $this->t('The default Latitude value for the map'),
     );
 
     $form['google_map_field_default_lon'] = array(
       '#type' => 'textfield',
-      '#title' => $this->t('Default Longitude '),
+      '#title' => $this->t('Default Longitude'),
       '#description' => $this->t('The default Longitude value for the map'),
-      '#default_value' => isset($config['google_map_field_default_lon']) ? $config['google_map_field_default_lon'] : '-150.71678170625',
     );
+
+    $form['google_map_field_default_zoom'] = [
+      '#type' => 'select',
+      '#title' => $this->t('Default Zoom Level'),
+      '#options' => [
+        '1' => $this->t('1'),
+        '2' => $this->t('2'),
+        '3' => $this->t('3'),
+        '4' => $this->t('4'),
+        '5' => $this->t('5'),
+        '6' => $this->t('6'),
+        '7' => $this->t('7'),
+        '8' => $this->t('8'),
+        '9' => $this->t('9'),
+        '10' => $this->t('10'),
+        '11' => $this->t('11'),
+        '12' => $this->t('12'),
+        '13' => $this->t('13'),
+        '14' => $this->t('14'),
+      ],
+    ];
 
     return $form;
   }
@@ -147,5 +169,8 @@ class GoogleMapAllPointsBlock extends BlockBase  implements BlockPluginInterface
     $this->configuration['google_map_field_show_route'] = $values['google_map_field_show_route'];
     $this->configuration['google_map_field_show_tooltip'] = $values['google_map_field_show_tooltip'];
     $this->configuration['google_map_field_show_region_selector'] = $values['google_map_field_show_region_selector'];
+    $this->configuration['google_map_field_default_lat'] = $values['google_map_field_default_lat'];
+    $this->configuration['google_map_field_default_lon'] = $values['google_map_field_default_lon'];
+    $this->configuration['google_map_field_default_zoom'] = $values['google_map_field_default_zoom'];
   }
 }

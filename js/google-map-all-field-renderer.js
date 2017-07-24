@@ -37,7 +37,7 @@ var google_map_field_map;
 // Create the map coords and map options.
     var latlng = new google.maps.LatLng(lat, lon);
     var mapOptions = {
-      zoom: 14,
+      zoom: zoom,
       center: latlng,
       streetViewControl: false,
       mapTypeId: type,
@@ -125,7 +125,6 @@ var google_map_field_map;
       }
     }
     else {
-      google_map_field_map.setZoom(5);
       google_map_field_map.setCenter(latlng);
       $('.map__error-message').show();
 
