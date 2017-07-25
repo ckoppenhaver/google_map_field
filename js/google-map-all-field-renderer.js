@@ -113,7 +113,6 @@ var google_map_field_map;
     }
     if (markersSet > 0) {
       $('.map__error-message').hide();
-      console.log('pang');
       latlngbounds = new google.maps.LatLngBounds();
       LatLngList.forEach(function(latLngNew){
         latlngbounds.extend(latLngNew);

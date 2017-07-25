@@ -50,11 +50,11 @@
 
     var dialogHTML = '';
     dialogHTML += '<div id="google_map_field_dialog">';
-    dialogHTML += '  <div>' + Drupal.t('Use the map below to drop a marker at the required location.') + '</div>';
+    dialogHTML += '  <h3>' + Drupal.t('Use the map below to drop a marker at the required location.') + '</h3>';
     dialogHTML += '  <div id="google_map_field_container">';
     dialogHTML += '    <div id="google_map_map_container">';
     dialogHTML += '      <div id="centre_on">';
-    dialogHTML += '        <label>' + Drupal.t('Enter an address/town/postcode, etc., to center the map on:') + '</label><input size="50" type="text" name="centre_map_on" id="centre_map_on" value=""/>';
+    dialogHTML += '        <label>' + Drupal.t('Enter an address/town/postcode, etc., to center the map on:') + '</label><input size="50" type="text" name="centre_map_on" id="centre_map_on" value="" placeholder="Address"/>';
     dialogHTML += '        <button onclick="return doCentre();" type="button" role="button" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only button">' + Drupal.t('Find') + '</button>';
     dialogHTML += '        <div id="map_error"></div>';
     dialogHTML += '        <div id="centre_map_results"></div>';
@@ -67,16 +67,16 @@
     dialogHTML += '      <table class="route-path-listing">';
     dialogHTML += '      </table>';
     dialogHTML += '    </div>';
-    dialogHTML += '    <div id="google_map_field_options">';
-    dialogHTML += '      <label for="edit-zoom">Map Zoom</label>';
-    dialogHTML += '      <select class="form-select" id="edit-zoom" name="field_zoom"><option value="1">1 (Min)</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9 (Default)</option><option value="10">10</option><option value="11">11</option><option value="12">12</option><option value="13">13</option><option value="14">14</option><option value="15">15</option><option value="16">16</option><option value="17">17</option><option value="18">18</option><option value="19">19</option><option value="20">20</option><option value="21">21 (Max)</option></select>';
-    dialogHTML += '      <label for="edit-type">Map Type</label>';
-    dialogHTML += '      <select disabled class="form-select" id="edit-type" name="field_type"><option value="roadmap">Map</option><option value="satellite">Satellite</option><option value="hybrid">Hybrid</option><option value="terrain" selected>Terrain</option></select>';
-    dialogHTML += '      <label for="edit-width">Map Width</label>';
-    dialogHTML += '      <input type="text" id="edit-width" size="5" maxlength="6" name="field-width" value="" />';
-    dialogHTML += '      <label for="edit-height">Map Height</label>';
-    dialogHTML += '      <input type="text" id="edit-height" size="5" maxlength="6" name="field-height" value="" />';
-    dialogHTML += '    </div>';
+    // dialogHTML += '    <div id="google_map_field_options">';
+    // dialogHTML += '      <label for="edit-zoom">Map Zoom</label>';
+    // dialogHTML += '      <select class="form-select" id="edit-zoom" name="field_zoom"><option value="1">1 (Min)</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9 (Default)</option><option value="10">10</option><option value="11">11</option><option value="12">12</option><option value="13">13</option><option value="14">14</option><option value="15">15</option><option value="16">16</option><option value="17">17</option><option value="18">18</option><option value="19">19</option><option value="20">20</option><option value="21">21 (Max)</option></select>';
+    // dialogHTML += '      <label for="edit-type">Map Type</label>';
+    // dialogHTML += '      <select disabled class="form-select" id="edit-type" name="field_type"><option value="roadmap">Map</option><option value="satellite">Satellite</option><option value="hybrid">Hybrid</option><option value="terrain" selected>Terrain</option></select>';
+    // dialogHTML += '      <label for="edit-width">Map Width</label>';
+    // dialogHTML += '      <input type="text" id="edit-width" size="5" maxlength="6" name="field-width" value="" />';
+    // dialogHTML += '      <label for="edit-height">Map Height</label>';
+    // dialogHTML += '      <input type="text" id="edit-height" size="5" maxlength="6" name="field-height" value="" />';
+    // dialogHTML += '    </div>';
     dialogHTML += '  </div>';
     dialogHTML += '</div>';
 
@@ -161,6 +161,7 @@
       streetViewControl: false,
       mapTypeId: type,
       disableDefaultUI: false,
+      mapTypeControl: false,
       disableDoubleClickZoom: true
     };
     google_map_field_map = new google.maps.Map(document.getElementById("gmf_container"), mapOptions);
@@ -727,19 +728,12 @@
     tableRow += '<td><select disabled class="map-item route-listing-color route-listing-item">';
     tableRow += '<option value="#FD402A">' + Drupal.t('Closure ') + '</option>';
     tableRow += '<option value="#73BD54">' + Drupal.t('Detour') + '</option>';
-    tableRow += '<option value="#6870A8">' + Drupal.t('Project Boundries') + '</option>';
+    tableRow += '<option value="#6870A8">' + Drupal.t('Project Boundaries') + '</option>';
     tableRow += '</select></td>';
     tableRow += '<td><select disabled class="map-item route-listing-size route-listing-item">';
-    tableRow += '<option value="1">1</option>';
-    tableRow += '<option value="2">2</option>';
-    tableRow += '<option value="3">3</option>';
-    tableRow += '<option value="4">4</option>';
-    tableRow += '<option value="5">5</option>';
-    tableRow += '<option value="6">6</option>';
-    tableRow += '<option value="7">7</option>';
-    tableRow += '<option value="8">8</option>';
-    tableRow += '<option value="9">9</option>';
-    tableRow += '<option value="10">10</option>';
+    tableRow += '<option value="2">Thin</option>';
+    tableRow += '<option value="5">Medium</option>';
+    tableRow += '<option value="8">Thick</option>';
     tableRow += '</select></td>';
     tableRow += '</tr>';
 

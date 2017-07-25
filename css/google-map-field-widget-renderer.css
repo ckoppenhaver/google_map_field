@@ -32,6 +32,9 @@
   width: 98%;
 }
 
+#centre_on {
+  margin-bottom: 10px;
+}
 #centre_on label {
   font-weight: normal;
 }

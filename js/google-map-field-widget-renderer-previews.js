@@ -23,6 +23,8 @@
         var markerIndex = 0;
         var markerEditIndex = 0;
         var infoWindow = [];
+        var LatLngList = [];
+        var markersSet = 0;
 
         markerCoords = toObj(markerCoords);
 
@@ -62,6 +64,9 @@
           markerIndex = index;
           markerEditIndex = index;
 
+          LatLngList.push(new google.maps.LatLng (path[0].lat, path[0].lng));
+          markersSet++;
+
           infoWindow[index] = new google.maps.InfoWindow({
             content: path[0].notes
           });
@@ -87,6 +92,17 @@
           event.preventDefault();
           googleMapFieldSetter($(this).attr('data-delta'));
         });
+      }
+      latlngbounds = new google.maps.LatLngBounds();
+      LatLngList.forEach(function(latLngNew){
+        latlngbounds.extend(latLngNew);
+      });
+
+      if (markersSet > 0) {
+        google_map_field_map.setCenter(latlngbounds.getCenter());
+      }
+      if (markersSet > 1){
+        google_map_field_map.fitBounds(latlngbounds);
       }
     });  // end .each
 
